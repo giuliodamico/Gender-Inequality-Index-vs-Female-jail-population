@@ -26,11 +26,11 @@ The project combines quantitative data analysis (Python), interactive dashboards
 
 ## Data Sources
 
-| Source | Description | Format |
-|--------|-------------|--------|
-| [EIGE Gender Equality Index](https://eige.europa.eu/gender-equality-index) | Gender equality scores and sub-domain indicators for EU countries | CSV / API |
-| [Eurostat — Prison Statistics](https://ec.europa.eu/eurostat/web/crime/data/database) | Number of prisoners by sex, country, and year | CSV |
-| Additional EU-level contextual variables (TBD) | e.g., GDP, unemployment by sex, education attainment | CSV |
+| Source                                                                              | Description                                                       | Format    |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------- |
+| [EIGE Gender Equality Index](https://eige.europa.eu/gender-equality-index)             | Gender equality scores and sub-domain indicators for EU countries | CSV / API |
+| [Eurostat — Prison Statistics](https://ec.europa.eu/eurostat/web/crime/data/database) | Number of prisoners by sex, country, and year                     | CSV       |
+| Additional EU-level contextual variables (TBD)                                      | e.g., GDP, unemployment by sex, education attainment              | CSV       |
 
 > **Raw data must never be modified.** All transformations are performed programmatically and saved to `data/interim/` or `data/processed/`.
 
@@ -110,14 +110,15 @@ jupyter lab
 
 ### Branch Strategy
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Stable, reviewed code only |
-| `develop` | Integration branch for ongoing work |
+| Branch                          | Purpose                               |
+| ------------------------------- | ------------------------------------- |
+| `main`                        | Stable, reviewed code only            |
+| `develop`                     | Integration branch for ongoing work   |
 | `feature/<short-description>` | Individual features or analysis tasks |
-| `fix/<short-description>` | Bug fixes |
+| `fix/<short-description>`     | Bug fixes                             |
 
 **Standard flow:**
+
 1. Branch off `develop`: `git checkout -b feature/eda-prison-data`
 2. Make small, focused commits.
 3. Open a Pull Request into `develop` with a short description.
@@ -160,20 +161,6 @@ Examples:
 - Random seeds (if used) must be set explicitly and documented.
 - The `requirements.txt` pins exact package versions.
 - To reproduce the full analysis pipeline, run the notebooks in order (01 → 04).
-
----
-
-## Team Roles
-
-| Role | Responsibilities |
-|------|-----------------|
-| **Data Engineer** | Data collection, cleaning, integration (`src/`, `data/`) |
-| **Analyst** | EDA, statistical summaries, insight generation (`notebooks/`) |
-| **Visualization Designer** | Charts, dashboard layout, color/typography choices (`visuals/`) |
-| **Web Developer** | JavaScript interactive feature, WordPress page (`website/`) |
-| **Reporter** | Written report, design rationale, white-hat reflection (`report/`, `docs/`) |
-
-> Roles may overlap; update this section as responsibilities evolve.
 
 ---
 
