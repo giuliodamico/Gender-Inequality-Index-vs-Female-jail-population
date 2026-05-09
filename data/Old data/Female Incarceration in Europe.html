@@ -796,7 +796,7 @@
             <h3 id="cc-name">Select a country</h3>
             <span class="reg-tag" id="cc-region">—</span>
           </div>
-          <div class="row"><span class="lbl">Gender Gap Index</span><span class="val" id="cc-ggi">—</span></div>
+          <div class="row"><span class="lbl">Avg Gender Gap Index</span><span class="val" id="cc-ggi">—</span></div>
           <div class="row"><span class="lbl">Female prisoners / 100k</span><span class="val" id="cc-rate">—</span></div>
           <div class="row"><span class="lbl">Female % of prison pop.</span><span class="val" id="cc-pct">—</span></div>
           <p class="hint">Click a country on the map to load detail.</p>
@@ -964,20 +964,6 @@
 
 <script src="data.js"></script>
 <script>
-  // === Gender Gap Index per paese per anno ===
-const GenderIndexData = {
-    2014:{AUT:0.742,BEL:0.753,BGR:0.730,HRV:0.728,CYP:0.681,CZE:0.703,DNK:0.802,EST:0.746,FIN:0.845,FRA:0.759,DEU:0.776,GRC:0.679,HUN:0.680,IRL:0.787,ITA:0.697,LVA:0.771,LTU:0.741,LUX:0.726,MLT:0.672,NLD:0.762,POL:0.736,PRT:0.737,ROU:0.700,SVK:0.706,SVN:0.756,ESP:0.762,SWE:0.816},
-    2015:{AUT:0.738,BEL:0.753,BGR:0.728,HRV:0.724,CYP:0.679,CZE:0.706,DNK:0.767,EST:0.749,FIN:0.850,FRA:0.761,DEU:0.779,GRC:0.682,HUN:0.675,IRL:0.807,ITA:0.699,LVA:0.752,LTU:0.741,LUX:0.730,MLT:0.668,NLD:0.776,POL:0.736,PRT:0.737,ROU:0.698,SVK:0.700,SVN:0.784,ESP:0.742,SWE:0.823},
-    2016:{AUT:0.735,BEL:0.750,BGR:0.723,HRV:0.719,CYP:0.673,CZE:0.708,DNK:0.771,EST:0.756,FIN:0.845,FRA:0.755,DEU:0.769,GRC:0.677,HUN:0.672,IRL:0.783,ITA:0.694,LVA:0.769,LTU:0.749,LUX:0.727,MLT:0.671,NLD:0.757,POL:0.733,PRT:0.740,ROU:0.695,SVK:0.702,SVN:0.812,ESP:0.746,SWE:0.815},
-    2017:{AUT:0.740,BEL:0.754,BGR:0.727,HRV:0.727,CYP:0.676,CZE:0.712,DNK:0.778,EST:0.748,FIN:0.823,FRA:0.759,DEU:0.778,GRC:0.681,HUN:0.678,IRL:0.794,ITA:0.700,LVA:0.769,LTU:0.756,LUX:0.728,MLT:0.673,NLD:0.762,POL:0.737,PRT:0.744,ROU:0.699,SVK:0.704,SVN:0.796,ESP:0.752,SWE:0.816},
-    2018:{AUT:0.741,BEL:0.756,BGR:0.729,HRV:0.729,CYP:0.678,CZE:0.714,DNK:0.774,EST:0.750,FIN:0.832,FRA:0.763,DEU:0.780,GRC:0.683,HUN:0.681,IRL:0.798,ITA:0.701,LVA:0.770,LTU:0.758,LUX:0.729,MLT:0.676,NLD:0.764,POL:0.738,PRT:0.746,ROU:0.701,SVK:0.706,SVN:0.791,ESP:0.755,SWE:0.822},
-    2019:{AUT:0.744,BEL:0.757,BGR:0.731,HRV:0.731,CYP:0.681,CZE:0.716,DNK:0.782,EST:0.752,FIN:0.832,FRA:0.766,DEU:0.787,GRC:0.685,HUN:0.683,IRL:0.798,ITA:0.703,LVA:0.771,LTU:0.759,LUX:0.730,MLT:0.679,NLD:0.766,POL:0.740,PRT:0.748,ROU:0.703,SVK:0.708,SVN:0.792,ESP:0.758,SWE:0.820},
-    2020:{AUT:0.745,BEL:0.758,BGR:0.733,HRV:0.733,CYP:0.684,CZE:0.718,DNK:0.783,EST:0.753,FIN:0.861,FRA:0.767,DEU:0.787,GRC:0.689,HUN:0.685,IRL:0.800,ITA:0.707,LVA:0.772,LTU:0.760,LUX:0.731,MLT:0.682,NLD:0.767,POL:0.742,PRT:0.749,ROU:0.705,SVK:0.710,SVN:0.792,ESP:0.760,SWE:0.820},
-    2021:{AUT:0.746,BEL:0.759,BGR:0.734,HRV:0.735,CYP:0.687,CZE:0.719,DNK:0.783,EST:0.754,FIN:0.861,FRA:0.768,DEU:0.796,GRC:0.700,HUN:0.687,IRL:0.800,ITA:0.721,LVA:0.773,LTU:0.761,LUX:0.732,MLT:0.685,NLD:0.768,POL:0.743,PRT:0.751,ROU:0.706,SVK:0.711,SVN:0.791,ESP:0.761,SWE:0.823},
-    2022:{AUT:0.747,BEL:0.760,BGR:0.735,HRV:0.736,CYP:0.689,CZE:0.720,DNK:0.784,EST:0.756,FIN:0.860,FRA:0.769,DEU:0.801,GRC:0.701,HUN:0.688,IRL:0.804,ITA:0.720,LVA:0.774,LTU:0.762,LUX:0.733,MLT:0.687,NLD:0.769,POL:0.744,PRT:0.752,ROU:0.707,SVK:0.712,SVN:0.795,ESP:0.762,SWE:0.822},
-    2023:{AUT:0.748,BEL:0.763,BGR:0.736,HRV:0.737,CYP:0.690,CZE:0.721,DNK:0.787,EST:0.757,FIN:0.863,FRA:0.756,DEU:0.815,GRC:0.702,HUN:0.689,IRL:0.797,ITA:0.703,LVA:0.773,LTU:0.763,LUX:0.734,MLT:0.688,NLD:0.774,POL:0.745,PRT:0.754,ROU:0.708,SVK:0.713,SVN:0.792,ESP:0.760,SWE:0.815}
-  };
-
   // === Embedded per-year per-country female prisoners per 100k ===
 const mapData = {
     2014:{AUT:5.93,BEL:4.51,BGR:3.66,CYP:2.5,CZE:11.12,DEU:4.49,DNK:2.57,ESP:10.57,EST:12.24,FIN:4.39,FRA:3.18,GRC:5.25,HRV:4.52,HUN:13.72,IRL:2.58,ITA:3.94,LTU:12.94,LUX:4.67,LVA:17.3,MLT:8.54,NLD:3.98,POL:7.29,PRT:8.03,ROU:7.72,SVK:11.33,SVN:4.32,SWE:3.43},
@@ -1243,9 +1229,7 @@ const countryMeta = {
       ccRegion.textContent = m.region;
       const rate = mapData[currentYear] && mapData[currentYear][iso] != null
         ? mapData[currentYear][iso] : null;
-      const ggi = GenderIndexData[currentYear] && GenderIndexData[currentYear][iso] != null
-        ? GenderIndexData[currentYear][iso] : null;
-      ccGGI.textContent = ggi != null ? ggi.toFixed(3) : '—';
+      ccGGI.textContent = (D.COUNTRY_AVG_GGI[cName] || 0).toFixed(3);
       ccRate.textContent = rate != null ? rate.toFixed(1) : '—';
       ccPct.textContent = ((D.FEM_PCT[cName] || 0)).toFixed(1) + '%';
     }
