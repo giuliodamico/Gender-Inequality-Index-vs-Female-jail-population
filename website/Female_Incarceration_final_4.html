@@ -1,0 +1,1585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Women Behind Bars — Gender Inequality &amp; Female Incarceration in Europe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://d3js.org/d3-geo.v3.min.js"></script>
+<style>
+  :root {
+    --warm: #E7D8C3;
+    --blue: #003399;
+    --gold: #FFD700;
+    --ink: #1A1A1A;
+    --paper: #FFFFFF;
+    --red: #C0392B;
+    --green: #27AE60;
+    --purple: #8E44AD;
+    --salmon: #E74C3C;
+    --celeste: #42D4F5;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--warm);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, .display { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: var(--gold); z-index: 1000;
+    transition: width 0.08s linear;
+  }
+  .section-counter {
+    position: fixed; bottom: 24px; right: 24px;
+    z-index: 999;
+    background: rgba(26,26,26,0.78);
+    color: var(--gold);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,215,0,0.3);
+  }
+
+  section {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 40px;
+    position: relative;
+  }
+  .sec-blue { background: var(--blue); color: var(--warm); }
+  .sec-warm { background: var(--warm); color: var(--ink); }
+  .sec-dark { background: var(--ink); color: var(--paper); }
+
+  .container { width: 100%; max-width: 1280px; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    margin-bottom: 18px;
+  }
+  h2.section-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 32px;
+    text-wrap: balance;
+  }
+  .lead { font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.6; opacity: 0.9; max-width: 60ch; }
+
+  /* ========= PAGE 1 — HERO ========= */
+  #hero { padding: 0; background: var(--ink); overflow: hidden; }
+  #hero .bg {
+    position: absolute; inset: 0;
+    background: url('assets/hero_women.jpeg') center/cover no-repeat;
+    filter: grayscale(0.15) contrast(1.05);
+  }
+  #hero .veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(26,26,26,0.45) 0%, rgba(26,26,26,0.62) 50%, rgba(26,26,26,0.78) 100%);
+  }
+  #hero .grain {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  #hero .frame { position: absolute; inset: 28px; border: 1px solid rgba(231,216,195,0.2); pointer-events: none; }
+  #hero .corner { position: absolute; width: 18px; height: 18px; border-color: var(--gold); border-style: solid; }
+  #hero .corner.tl { top: 22px; left: 22px; border-width: 1px 0 0 1px; }
+  #hero .corner.tr { top: 22px; right: 22px; border-width: 1px 1px 0 0; }
+  #hero .corner.bl { bottom: 22px; left: 22px; border-width: 0 0 1px 1px; }
+  #hero .corner.br { bottom: 22px; right: 22px; border-width: 0 1px 1px 0; }
+  #hero .hero-content { position: relative; z-index: 2; text-align: center; color: var(--paper); padding: 0 32px; max-width: 1100px; }
+  #hero .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.32em; color: var(--gold);
+    margin-bottom: 28px; text-transform: uppercase;
+  }
+  #hero .kicker::before, #hero .kicker::after {
+    content: ''; display: inline-block; width: 36px; height: 1px;
+    background: var(--gold); vertical-align: middle; margin: 0 14px;
+  }
+  #hero h1 {
+    font-size: clamp(2.5rem, 5vw, 5rem); line-height: 1.05;
+    letter-spacing: -0.015em; margin: 0; text-wrap: balance; font-weight: 700;
+  }
+  #hero h1 em { font-style: italic; color: var(--gold); font-weight: 400; }
+  #hero .deck { margin-top: 28px; font-size: clamp(0.9rem, 1.1vw, 1.05rem); line-height: 1.6; opacity: 0.78; max-width: 720px; margin-left: auto; margin-right: auto; }
+  #hero .meta-row {
+    position: absolute; bottom: 40px; left: 0; right: 0;
+    display: flex; justify-content: space-between; padding: 0 56px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
+    color: rgba(231,216,195,0.65); text-transform: uppercase; z-index: 3;
+  }
+  .scroll-arrow {
+    position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+    color: var(--gold); font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.2em; text-transform: uppercase; z-index: 3; text-align: center;
+  }
+  .scroll-arrow .line {
+    width: 1px; height: 50px; margin: 14px auto 0;
+    background: linear-gradient(180deg, var(--gold), transparent);
+    animation: drop 2.2s ease-in-out infinite;
+  }
+  @keyframes drop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    50.01% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ========= PAGE 2 ========= */
+  #gap .play-btn-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--gold); color: var(--blue);
+    border: none; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin: 18px auto 24px;
+    transition: transform 0.2s, filter 0.2s;
+    box-shadow: 0 4px 14px rgba(0,51,153,0.25);
+  }
+  #gap .play-btn-circle:hover { transform: scale(1.05); filter: brightness(0.95); }
+  #gap .stage {
+    width: 100%; max-width: 980px; margin: 10px auto 0;
+    position: relative; height: 360px;
+  }
+  #gap .timeline { position: absolute; bottom: 60px; left: 6%; right: 6%; height: 2px; background: var(--blue); }
+  #gap .timeline .tick { position: absolute; top: -6px; width: 1px; height: 14px; background: var(--blue); }
+  #gap .timeline .label {
+    position: absolute; top: 18px; transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--blue);
+  }
+  #gap .dot {
+    position: absolute; bottom: 53px; width: 16px; height: 16px;
+    background: var(--gold); border: 2px solid var(--blue);
+    border-radius: 50%; transform: translateX(-50%);
+    box-shadow: 0 0 0 6px rgba(255,215,0,0.18);
+  }
+  #gap .silhouettes {
+    position: absolute; bottom: 70px; display: flex;
+    justify-content: space-between; left: 6%; right: 6%;
+    height: 220px; align-items: flex-end;
+  }
+  #gap .sil-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 90px; }
+  #gap .sil { width: 60px; }
+  #gap .sil-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
+  #gap .scrubber-wrap {
+    width: 70%; max-width: 700px;
+    margin: 24px auto 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.6s;
+  }
+  #gap .scrubber-wrap.show { opacity: 1; pointer-events: auto; }
+  #gap .scrubber-wrap .scrub-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--blue);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-align: center; margin-bottom: 8px;
+  }
+  #gap input[type=range].scrubber {
+    width: 100%; -webkit-appearance: none; appearance: none;
+    background: transparent;
+  }
+  #gap input[type=range].scrubber::-webkit-slider-runnable-track {
+    height: 4px; background: var(--blue); border-radius: 2px;
+  }
+  #gap input[type=range].scrubber::-moz-range-track {
+    height: 4px; background: var(--blue); border-radius: 2px;
+  }
+  #gap input[type=range].scrubber::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--blue);
+    margin-top: -8px; cursor: pointer;
+    box-shadow: 0 0 0 6px rgba(255,215,0,0.2);
+  }
+  #gap input[type=range].scrubber::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--blue);
+    cursor: pointer;
+  }
+  #gap .caption { text-align: center; margin-top: 26px; max-width: 60ch; line-height: 1.6; font-size: 1.05rem; margin-left: auto; margin-right: auto; }
+  #gap .stat-line {
+    margin-top: 12px; display: flex; gap: 32px; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--blue);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  #gap .stat-line span b { color: var(--ink); font-size: 14px; }
+
+  /* ========= PAGE 3 ========= */
+  #theory { padding: 120px 40px; }
+  #theory .grid-3 {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px 64px;
+    margin-top: 50px;
+  }
+  #theory .sub h3 {
+    font-family: 'Playfair Display', serif; color: var(--gold);
+    font-size: 1.5rem; font-style: italic;
+    margin: 0 0 8px; font-weight: 500;
+  }
+  #theory .sub .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.25em;
+    color: rgba(231,216,195,0.55);
+    margin-bottom: 14px; display: block;
+  }
+  #theory p { line-height: 1.75; margin: 0 0 16px; font-size: 0.98rem; color: rgba(231,216,195,0.92); }
+  #theory .pull {
+    border-left: 2px solid var(--gold); padding: 10px 0 10px 22px; margin: 22px 0;
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.25rem; line-height: 1.4; color: var(--gold);
+  }
+  #theory .closer {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(255,215,0,0.25);
+    padding-top: 36px; margin-top: 12px;
+  }
+  #theory .closer h3 { font-size: 1.8rem; }
+  @media (max-width: 900px) { #theory .grid-3 { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* ========= PAGE 4 ========= */
+  #method .blocks { margin-top: 40px; display: flex; flex-direction: column; gap: 28px; }
+  #method .block {
+    display: grid; grid-template-columns: 110px 1fr; gap: 32px;
+    padding: 28px 32px;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid rgba(0,51,153,0.15);
+    align-items: center;
+  }
+  #method .block:nth-child(even) { background: rgba(0,51,153,0.05); }
+  #method .icon {
+    width: 96px; height: 96px;
+    border: 1.5px solid var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--blue);
+  }
+  #method .block h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 0 0 6px; color: var(--blue); }
+  #method .block .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.22em; color: var(--blue); text-transform: uppercase;
+    opacity: 0.65; margin-bottom: 10px;
+  }
+  #method .block p { margin: 0; line-height: 1.6; color: rgba(26,26,26,0.85); }
+  #method .note {
+    margin-top: 36px; padding: 18px 22px;
+    border-left: 2px solid var(--blue); font-style: italic;
+    font-size: 0.95rem; color: rgba(26,26,26,0.75);
+    background: rgba(0,51,153,0.04);
+  }
+
+  /* ========= PAGE 5 — Choropleth ========= */
+  #map-section { background: var(--ink); color: var(--paper); }
+  #map-section .layout {
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    gap: 40px; align-items: start; width: 100%;
+    margin-top: 28px;
+  }
+  #map-wrap {
+    position: relative;
+    background: #1A1A1A;
+    border: 1px solid rgba(255,215,0,0.15);
+    aspect-ratio: 4/3.2;
+  }
+  #map-svg { width: 100%; height: 100%; display: block; }
+  .map-tooltip {
+    position: absolute; pointer-events: none;
+    background: rgba(26,26,26,0.95); color: var(--gold);
+    border: 1px solid rgba(255,215,0,0.3);
+    padding: 6px 10px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.05em;
+    transform: translate(-50%, -120%);
+    opacity: 0; transition: opacity 0.15s;
+  }
+  #map-controls {
+    margin-top: 18px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center;
+  }
+  #map-year-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem; color: var(--gold); line-height: 1;
+    min-width: 100px;
+  }
+  #map-slider {
+    width: 100%; -webkit-appearance: none; appearance: none; background: transparent;
+  }
+  #map-slider::-webkit-slider-runnable-track { height: 4px; background: var(--gold); border-radius: 2px; }
+  #map-slider::-moz-range-track { height: 4px; background: var(--gold); border-radius: 2px; }
+  #map-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--paper);
+    margin-top: -7px; cursor: pointer;
+  }
+  #map-slider::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--paper); cursor: pointer;
+  }
+  #map-year-range {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: rgba(255,255,255,0.7);
+    letter-spacing: 0.1em;
+  }
+  .country-card {
+    background: var(--warm); color: var(--ink);
+    padding: 28px 30px;
+    border: 1px solid rgba(0,51,153,0.2);
+    min-height: 320px;
+  }
+  .country-card .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid rgba(0,51,153,0.2);
+    padding-bottom: 10px; margin-bottom: 18px;
+  }
+  .country-card h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin: 0; color: var(--blue); font-weight: 700; }
+  .country-card .reg-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 10px; background: var(--blue); color: var(--paper);
+  }
+  .country-card .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 12px 0; border-bottom: 1px dashed rgba(0,51,153,0.15);
+  }
+  .country-card .row .lbl {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.1em; color: rgba(0,51,153,0.7);
+    text-transform: uppercase; max-width: 60%;
+  }
+  .country-card .row .val { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--blue); }
+  .country-card .hint {
+    margin-top: 18px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em; color: rgba(0,51,153,0.55);
+  }
+  #map-legend {
+    display: flex; align-items: center; gap: 14px; margin-top: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.7);
+  }
+  #map-legend .grad { width: 240px; height: 8px; background: linear-gradient(90deg, #42D4F5, #003399); border: 1px solid rgba(255,255,255,0.15); }
+  @media (max-width: 900px) { #map-section .layout { grid-template-columns: 1fr; } }
+
+  /* ========= PAGE 6 — Race ========= */
+  #race { background: var(--warm); }
+  #race .stage {
+    margin-top: 24px;
+    display: grid; grid-template-columns: 1fr 260px;
+    gap: 40px; align-items: start;
+  }
+  #race-chart { width: 100%; }
+  #race-chart svg { width: 100%; display: block; }
+  #race .controls {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 20px; padding: 28px 24px;
+    background: rgba(0,51,153,0.06);
+    border: 1px solid rgba(0,51,153,0.15);
+    position: sticky; top: 24px;
+  }
+  #race .year-display { font-family: 'Playfair Display', serif; font-size: 5rem; color: var(--blue); line-height: 0.9; font-weight: 900; }
+  #race .year-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--blue); text-transform: uppercase; opacity: 0.7; }
+  #race button.play-btn {
+    background: var(--gold); color: var(--blue); border: none;
+    padding: 14px 28px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; font-weight: 600; transition: filter 0.2s;
+  }
+  #race button.play-btn:hover { filter: brightness(0.92); }
+  #race .leader-callout { border-top: 1px solid rgba(0,51,153,0.2); padding-top: 18px; width: 100%; }
+  #race .leader-callout .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--blue); opacity: 0.7; text-transform: uppercase; }
+  #race .leader-callout .name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--blue); margin-top: 4px; }
+  @media (max-width: 900px) { #race .stage { grid-template-columns: 1fr; } #race .controls { position: static; } }
+
+  /* ========= PAGE 7 — Area Plots ========= */
+  #area-plots { background: var(--blue); color: var(--warm); }
+  #area-plots .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 30px; }
+  .area-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(255,215,0,0.2);
+    padding: 18px 22px 12px;
+  }
+  .area-card .title { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin: 0 0 4px; color: var(--ink); }
+  .area-card .sub {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; color: rgba(0,0,0,0.55);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .area-card svg { width: 100%; height: 220px; display: block; }
+  .area-card .legend {
+    display: flex; gap: 18px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: rgba(0,0,0,0.7); margin-top: 6px; letter-spacing: 0.1em;
+  }
+  .area-card .legend .dot { display: inline-block; width: 18px; height: 2px; vertical-align: middle; margin-right: 6px; }
+  @media (max-width: 800px) { #area-plots .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ========= PAGE 8 — Scatter ========= */
+  #scatter { background: var(--warm); }
+  #scatter .layout {
+    display: grid; grid-template-columns: 1.3fr 1fr;
+    gap: 40px; margin-top: 24px; align-items: start;
+  }
+  #scatter-chart { width: 100%; aspect-ratio: 4/3; background: #fff; border: 1px solid rgba(0,51,153,0.2); position: relative; }
+  #scatter-chart svg { width: 100%; height: 100%; display: block; }
+  #scatter .stat-card { padding: 28px; background: var(--blue); color: var(--warm); }
+  #scatter .stat-card .big {
+    font-family: 'Playfair Display', serif; font-size: 4rem;
+    line-height: 1; color: var(--gold); margin: 8px 0 4px;
+  }
+  #scatter .stat-card .lbl {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7;
+  }
+  #scatter .stat-card hr { border: 0; border-top: 1px solid rgba(255,215,0,0.3); margin: 24px 0; }
+  #scatter .stat-card p { line-height: 1.6; font-size: 0.95rem; }
+  #scatter .scatter-controls {
+    display: flex; align-items: center; gap: 14px; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--blue);
+    letter-spacing: 0.1em;
+  }
+  #scatter-year-display { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--blue); min-width: 70px; }
+  #scatter-slider { flex: 1; -webkit-appearance: none; appearance: none; background: transparent; }
+  #scatter-slider::-webkit-slider-runnable-track { height: 4px; background: var(--blue); border-radius: 2px; }
+  #scatter-slider::-moz-range-track { height: 4px; background: var(--blue); border-radius: 2px; }
+  #scatter-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--blue);
+    margin-top: -7px; cursor: pointer;
+  }
+  #scatter-slider::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--blue); cursor: pointer;
+  }
+  #scatter button.play-mini {
+    background: var(--gold); color: var(--blue); border: none;
+    padding: 8px 14px; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; cursor: pointer; font-weight: 600;
+  }
+  #scatter .caption { margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(0,51,153,0.65); letter-spacing: 0.1em; }
+  @media (max-width: 900px) { #scatter .layout { grid-template-columns: 1fr; } }
+
+  /* ========= PAGE 9 — Heatmap ========= */
+  #heatmap-section { background: var(--ink); color: var(--paper); }
+  #heatmap-chart { width: 100%; max-width: 1200px; margin: 30px auto 0; }
+  #heatmap-chart svg { width: 100%; height: auto; display: block; }
+
+  /* ========= PAGE 10 — Key Findings ========= */
+  #findings { background: var(--blue); color: var(--warm); padding: 120px 40px; }
+  #findings h2.section-title { color: var(--gold); }
+  #findings .sec-block { margin-top: 36px; padding-top: 36px; border-top: 1px solid rgba(255,215,0,0.5); }
+  #findings .sec-block:first-of-type { border-top: none; padding-top: 0; }
+  #findings h3 { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.7rem; margin: 0 0 22px; font-style: italic; font-weight: 500; }
+  #findings .col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  #findings p { line-height: 1.75; margin: 0 0 16px; font-size: 1rem; color: rgba(231,216,195,0.92); }
+  #findings .stat-pull {
+    display: block;
+    font-family: 'Playfair Display', serif; font-style: italic;
+    color: var(--gold); font-size: 1.5rem;
+    border-left: 2px solid var(--gold);
+    padding: 10px 22px; margin: 22px 0; line-height: 1.35;
+  }
+  #findings em { color: var(--gold); font-style: normal; font-weight: 500; }
+  @media (max-width: 900px) { #findings .col-2 { grid-template-columns: 1fr; } }
+
+  /* ========= PAGE 11 — Quiz + Black Hat ========= */
+  #investigate { background: var(--warm); }
+  #investigate .quiz-block {
+    background: var(--blue); color: var(--warm);
+    padding: 50px 40px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  #investigate .question {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    color: var(--gold);
+    font-size: clamp(1.4rem, 2.6vw, 2rem);
+    line-height: 1.3; max-width: 860px;
+    margin: 18px auto 24px;
+    text-wrap: balance;
+  }
+  #investigate .btn-row { display: flex; gap: 24px; justify-content: center; }
+  #investigate button.choice {
+    width: 180px; padding: 18px;
+    background: transparent;
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: 1.1rem; letter-spacing: 0.2em;
+    cursor: pointer; transition: all 0.25s;
+  }
+  #investigate button.yes { border: 2px solid var(--gold); color: var(--gold); }
+  #investigate button.yes:hover { background: var(--gold); color: var(--blue); }
+  #investigate button.no { border: 2px solid var(--warm); color: var(--warm); }
+  #investigate button.no:hover { background: var(--warm); color: var(--blue); }
+  #investigate .feedback {
+    margin-top: 26px; padding: 18px 24px;
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.4);
+    max-width: 720px; margin-left: auto; margin-right: auto;
+    line-height: 1.6; text-align: center; display: none;
+  }
+  #investigate .feedback.show { display: block; }
+  #investigate .feedback .check { color: var(--gold); font-weight: 600; margin-right: 6px; }
+
+  #investigate .warning {
+    color: var(--red); font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  #investigate .subtitle { color: var(--red); font-size: 1.1rem; margin-bottom: 26px; font-style: italic; }
+  #investigate h3.bh-title { font-family: 'Playfair Display', serif; color: var(--blue); font-size: 1.8rem; margin: 0 0 6px; }
+  #investigate .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 12px; }
+  .bar-card {
+    background: #fff; border: 1px solid rgba(0,51,153,0.15);
+    padding: 16px 18px;
+  }
+  .bar-card .title { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--ink); margin: 0 0 10px; }
+  .bar-card svg { width: 100%; height: 200px; display: block; }
+  #investigate .reveal-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 28px; gap: 18px;
+    padding: 18px 22px; background: var(--blue); color: var(--warm);
+  }
+  #investigate .reveal-row p { margin: 0; line-height: 1.5; max-width: 60ch; }
+  #investigate button.reveal {
+    background: var(--gold); color: var(--blue);
+    border: none; padding: 14px 26px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; font-weight: 600; white-space: nowrap;
+  }
+  #investigate .closer {
+    margin-top: 60px; text-align: center;
+    border-top: 1px solid rgba(0,51,153,0.25); padding-top: 50px;
+  }
+  #investigate .closer p {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    color: var(--blue); font-size: 1.4rem; max-width: 800px;
+    margin: 0 auto; line-height: 1.5;
+  }
+  #investigate .closer .mark {
+    display: block; margin-top: 24px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.3em; color: rgba(0,51,153,0.5); text-transform: uppercase;
+  }
+  @media (max-width: 800px) { #investigate .grid-2 { grid-template-columns: 1fr; } }
+
+  .axis line, .axis path { stroke: rgba(0,0,0,0.2); }
+  .axis text { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  #heatmap-chart .axis text { fill: rgba(255,255,255,0.85); }
+  .reveal-up { opacity: 0; transform: translateY(40px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .reveal-up.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="section-counter" id="counter">01 / 11</div>
+
+<!-- ========= PAGE 1 — HERO ========= -->
+<section id="hero" data-screen-label="01 Hero">
+  <div class="bg"></div>
+  <div class="veil"></div>
+  <div class="grain"></div>
+  <div class="frame"></div>
+  <span class="corner tl"></span><span class="corner tr"></span>
+  <span class="corner bl"></span><span class="corner br"></span>
+  <div class="meta-row">
+    <span>Eurostat × World Economic Forum · 2014–2023</span>
+    <span>27 EU Member States</span>
+  </div>
+  <div class="hero-content">
+    <div class="kicker">A Data Investigation</div>
+    <h1>How do changes in <em>gender inequality</em> relate to cross-country differences in <em>female incarceration</em> in Europe?</h1>
+    <p class="deck">Ten years of prison statistics. Twenty-seven member states. One question that has divided criminology since 1895: does the closing gender gap also close the gap behind bars?</p>
+  </div>
+  <div class="scroll-arrow">
+    <span>Scroll to begin</span>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- ========= PAGE 2 — GAP ========= -->
+<section id="gap" class="sec-warm" data-screen-label="02 Gender Gap">
+  <div class="container reveal-up" style="text-align:center;">
+    <div class="eyebrow" style="color:var(--blue);">Chapter I · The Premise</div>
+    <h2 class="section-title" style="color:var(--blue);">The Shrinking Gap: A Decade of Change</h2>
+    <p class="lead" style="margin: 0 auto;">Europe's gender gap index has not closed, but it has narrowed. Press play to compress a decade into few seconds.</p>
+    <button class="play-btn-circle" id="gap-play" aria-label="Play">▶</button>
+
+    <div class="stage" id="gap-stage">
+      <div class="silhouettes">
+        <div class="sil-wrap">
+          <svg id="man-sil" viewBox="0 0 60 200" preserveAspectRatio="none" style="height:180px;">
+            <g fill="#003399">
+              <circle cx="30" cy="22" r="14"/>
+              <rect x="14" y="38" width="32" height="60" rx="8"/>
+              <rect x="10" y="60" width="10" height="50" rx="4"/>
+              <rect x="40" y="60" width="10" height="50" rx="4"/>
+              <rect x="18" y="92" width="11" height="100" rx="3"/>
+              <rect x="31" y="92" width="11" height="100" rx="3"/>
+            </g>
+          </svg>
+          <span class="sil-label" style="color:var(--blue);">MEN</span>
+        </div>
+        <div class="sil-wrap">
+          <svg id="woman-sil" viewBox="0 0 60 200" preserveAspectRatio="none" style="height:80px;">
+            <g fill="#FFD700" stroke="#003399" stroke-width="0.8">
+              <circle cx="30" cy="20" r="13"/>
+              <path d="M14 36 L46 36 L52 100 L38 100 L34 90 L26 90 L22 100 L8 100 Z"/>
+              <rect x="22" y="100" width="7" height="92" rx="3"/>
+              <rect x="31" y="100" width="7" height="92" rx="3"/>
+              <rect x="6" y="44" width="9" height="48" rx="4"/>
+              <rect x="45" y="44" width="9" height="48" rx="4"/>
+            </g>
+          </svg>
+          <span class="sil-label" style="color:var(--blue);">WOMEN</span>
+        </div>
+      </div>
+      <div class="timeline" id="timeline"></div>
+      <div class="dot" id="gap-dot" style="left: 6%;"></div>
+    </div>
+
+    <div class="stat-line">
+      <span>YEAR · <b id="gap-year">2014</b></span>
+      <span>EU GGI · <b id="gap-ggi">0.731</b></span>
+      <span>Δ HEIGHT · <b id="gap-delta">100 px</b></span>
+    </div>
+
+    <div class="scrubber-wrap" id="scrub-wrap">
+      <div class="scrub-label">Drag to explore the decade</div>
+      <input type="range" class="scrubber" id="gap-scrub" min="0" max="1000" value="0" step="1"/>
+    </div>
+
+    <p class="caption">As gender equality improved across Europe, the symbolic distance between men and women began to close.</p>
+  </div>
+</section>
+
+<!-- ========= PAGE 3 — THEORY ========= -->
+<section id="theory" class="sec-blue" data-screen-label="03 Theory">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--gold);">Chapter II · Framework</div>
+    <h2 class="section-title">Women Behind Bars: Gender, Society, and the Making of the Female Criminal</h2>
+    <p class="lead" style="color:rgba(231,216,195,0.85);">For most of recorded history, the story of crime has been told as a man's story. Courtrooms, prisons, and criminological textbooks have long been built around a masculine subject. When women appeared at all, they were footnotes — anomalies, exceptions, curiosities. Yet, precisely because female criminality was considered so rare, it has always carried a disproportionate symbolic weight.</p>
+
+    <div class="grid-3">
+      <div class="sub">
+        <span class="num">§ 01</span>
+        <h3>A Body Destined for Virtue</h3>
+        <p>The earliest scientific attempts to explain female crime were not really about crime at all. They were about gender. In <em>La donna delinquente</em> (1895), Cesare Lombroso argued that female criminals were evolutionary throwbacks — atavistic creatures combining the worst traits of femininity with unwomanly masculine characteristics. The "normal" woman, by contrast, was passive, maternal, morally superior precisely because of her physical and intellectual limitations.</p>
+        <p>This framework was not neutral science. It was ideology dressed in measurement. The criminal woman was dangerous not just because she had broken a law, but because she had abandoned her assigned role — <em>doubly deviant</em>, against society and against her own nature.</p>
+        <p>William Thomas (1923) softened the biological edge but preserved the moral architecture. Otto Pollak (1950) added that women's crimes were simply hidden — concealed by deception and protected by a chivalrous justice system.</p>
+        <div class="pull">"Why are women so effectively kept from crime?"</div>
+        <p>It took until 1968 for a genuinely new vocabulary. Frances Heidensohn argued that low rates of female crime had nothing to do with biological virtue — they were the result of <em>control</em>. Women committed fewer crimes because they had fewer opportunities, and far more to lose if they did.</p>
+      </div>
+
+      <div class="sub">
+        <span class="num">§ 02</span>
+        <h3>Does Equality Change the Picture?</h3>
+        <p>This reframing opened a debate that continues to this day. In 1975, Freda Adler proposed the emancipation thesis: as women gained access to education, employment, and public life, their crime rates would converge with men's. The argument was intuitive — and immediately alarming to those who saw women's liberation as a social threat.</p>
+        <div class="pull">Increased female participation in crime, where it existed, was a symptom not of empowerment but of continued disadvantage.</div>
+        <p>The data, however, told a more complicated story. Meda Chesney-Lind's marginalization theory offered the most compelling counter-narrative: women in the criminal justice system were not Adler's liberated women asserting newfound power. They were the most marginalized — driven to petty theft, drug offences, and survival crimes by poverty and a labour market that had never been equitable in the first place.</p>
+        <p>Subsequent research has largely validated this view. Studies on Nordic countries — among the most gender-equal in the world — show that the closing gender gap in crime is driven primarily by a decline in male offending, not a rise in female criminality (Estrada et al., <em>BJC</em>, 2016).</p>
+      </div>
+
+      <div class="sub closer">
+        <span class="num">§ 03</span>
+        <h3>The Central Question</h3>
+        <p style="font-size:1.05rem;">Which perspective does the European evidence support? Using ten years of prison data across 27 EU member states (2014–2023), this project asks a deceptively simple question: <strong style="color:var(--gold);">do countries where women and men are more equal also imprison fewer women?</strong> The answer, as the data will show, is more nuanced — and more theoretically interesting — than either a straightforward yes or no.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= PAGE 4 — METHOD ========= -->
+<section id="method" class="sec-warm" data-screen-label="04 Method">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--blue);">Chapter III · Methods</div>
+    <h2 class="section-title" style="color:var(--blue);">How We Measured It</h2>
+    <div class="blocks">
+      <div class="block">
+        <div class="icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+            <ellipse cx="24" cy="10" rx="16" ry="5"/>
+            <path d="M8 10 v10 c0 2.8 7.2 5 16 5 s16 -2.2 16 -5 v -10"/>
+            <path d="M8 20 v10 c0 2.8 7.2 5 16 5 s16 -2.2 16 -5 v -10"/>
+            <path d="M8 30 v8 c0 2.8 7.2 5 16 5 s16 -2.2 16 -5 v -8"/>
+          </svg>
+        </div>
+        <div>
+          <span class="tag">Source 01 · Eurostat</span>
+          <h3>Prison Data</h3>
+          <p>Female prisoners per 100,000 inhabitants and the female share of the prison population, for 27 EU member states across 2014–2023.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+            <line x1="6" y1="42" x2="42" y2="42"/>
+            <rect x="10" y="28" width="6" height="14"/>
+            <rect x="20" y="20" width="6" height="22"/>
+            <rect x="30" y="12" width="6" height="30"/>
+            <polyline points="10,28 22,18 32,12" stroke-dasharray="2 2"/>
+          </svg>
+        </div>
+        <div>
+          <span class="tag">Source 02 · WEF Gender Gap Report</span>
+          <h3>Gender Equality Data</h3>
+          <p>The Gender Gap Index: a 0-to-1 composite across four dimensions. Merged by country-year into 270 paired observations.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+            <polyline points="18,16 8,24 18,32"/>
+            <polyline points="30,16 40,24 30,32"/>
+            <line x1="26" y1="10" x2="22" y2="38"/>
+          </svg>
+        </div>
+        <div>
+          <span class="tag">Method · Python · Tableau · Power BI </span>
+          <h3>Analysis & Tools</h3>
+          <p>Pearson's <em>r</em> and Spearman's <em>ρ</em> on the country-year panel; subgroup correlations by region.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note">Limitation: data comparability across European countries may be affected by differences in how national institutions collect, classify, and report prison statistics. 
+      The lack of full methodological uniformity means that cross-country comparisons should be interpreted with caution.</div>
+  </div>
+</section>
+
+<!-- ========= PAGE 5 — CHOROPLETH MAP ========= -->
+<section id="map-section" data-screen-label="05 Map">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--gold);">Chapter IV · The Map</div>
+    <h2 class="section-title">Explore the Data: Female Incarceration Across Europe</h2>
+    <p class="lead" style="opacity:0.75;">Click any country to see ten years of evidence.</p>
+
+    <div class="layout">
+      <div>
+        <div id="map-wrap">
+          <svg id="map-svg" viewBox="0 0 700 560"></svg>
+          <div class="map-tooltip" id="map-tooltip"></div>
+        </div>
+        <div id="map-controls">
+          <div id="map-year-display">2014</div>
+          <input type="range" id="map-slider" min="2014" max="2023" step="1" value="2014"/>
+          <div id="map-year-range">2014 ── 2023</div>
+        </div>
+        <div id="map-legend">
+          <span>LOW PER 100K</span>
+          <div class="grad"></div>
+          <span>HIGH PER 100K</span>
+        </div>
+      </div>
+      <div>
+        <div class="country-card" id="country-card">
+          <div class="head">
+            <h3 id="cc-name">Select a country</h3>
+            <span class="reg-tag" id="cc-region">—</span>
+          </div>
+          <div class="row"><span class="lbl">Gender Gap Index</span><span class="val" id="cc-ggi">—</span></div>
+          <div class="row"><span class="lbl">Female prisoners / 100k</span><span class="val" id="cc-rate">—</span></div>
+          <div class="row"><span class="lbl">Female % of prison pop.</span><span class="val" id="cc-pct">—</span></div>
+          <p class="hint">Click a country on the map to load detail.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= PAGE 6 — RACE ========= -->
+<section id="race" class="sec-warm" data-screen-label="06 Race">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--blue);">Chapter V · Movement</div>
+    <h2 class="section-title" style="color:var(--blue);">Who Leads in Gender Equality? A Race Through Time</h2>
+    <p class="lead">EU member states ranked by Gender Gap Index, year by year. The European Average highlighted in gold.</p>
+    <div class="stage">
+      <div id="race-chart"></div>
+      <div class="controls">
+        <div>
+          <div class="year-sub">Year</div>
+          <div class="year-display" id="race-year">2014</div>
+        </div>
+        <button class="play-btn" id="race-play">▶ PLAY</button>
+        <div class="leader-callout">
+          <div class="lbl">Currently leading</div>
+          <div class="name" id="race-leader">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= PAGE 7 — AREA ========= -->
+<section id="area-plots" data-screen-label="07 Area Plots">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--gold);">Chapter VI · Trends</div>
+    <h2 class="section-title">Gender Gap Index Over Time — Regional Trends</h2>
+    <p class="lead" style="color:rgba(231,216,195,0.8);">Four regions, ten years. Each panel plots the regional mean against the EU average (dashed red).</p>
+    <div class="grid-2" id="area-grid"></div>
+  </div>
+</section>
+
+<!-- ========= PAGE 8 — SCATTER ========= -->
+<section id="scatter" class="sec-warm" data-screen-label="08 Correlation">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--blue);">Chapter VII · The Core Finding</div>
+    <h2 class="section-title" style="color:var(--blue);">Average Gender Gap Index vs. Female Incarceration Rate</h2>
+    <div class="layout">
+      <div>
+        <div id="scatter-chart"></div>
+        <div class="scatter-controls">
+          <div id="scatter-year-display">2014</div>
+          <input type="range" id="scatter-slider" min="2014" max="2023" step="1" value="2014"/>
+          <button class="play-mini" id="scatter-play">▶ PLAY</button>
+        </div>
+        <div class="caption">Source: Eurostat + WEF Gender Gap Report. Each dot = one EU country, sized by female prison population, colored by region.</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Pearson's r (panel, 270 obs)</div>
+        <div class="big">−0.330</div>
+        <div class="lbl">Spearman's ρ</div>
+        <div class="big" style="font-size:2.5rem;">−0.362</div>
+        <hr/>
+        <p>The relationship is moderate and clearly negative — countries with higher gender equality consistently imprison fewer women per capita across the entire decade. <em>p &lt; 0.001</em> for both.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= PAGE 9 — HEATMAP ========= -->
+<section id="heatmap-section" data-screen-label="09 Heatmap">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--gold);">Chapter VIII · The Decade</div>
+    <h2 class="section-title">Gender Gap Index Heatmap (2014–2023)</h2>
+    <p class="lead" style="opacity:0.75;">All 27 countries, ten years, one matrix. Ordered by ten-year average descending.</p>
+    <div id="heatmap-chart"></div>
+  </div>
+</section>
+
+<!-- ========= PAGE 10 — KEY FINDINGS ========= -->
+<section id="findings" data-screen-label="10 Key Findings">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--gold);">Chapter IX · What the Evidence Shows</div>
+    <h2 class="section-title">Key Findings &amp; What the Data Tell Us</h2>
+
+    <div class="sec-block">
+      <h3>What the Data Shows: Europe, 2014–2023</h3>
+      <div class="col-2">
+        <div>
+          <p>Across all 27 EU member states over the decade, women remain a small and remarkably stable minority within prison populations.</p>
+          <span class="stat-pull">5.70% of the total prison population</span>
+          <p>On average, women represent 5.70% of prison populations — a figure that has barely shifted, moving from 5.34% in 2014 to 5.79% in 2023 (Δ = +0.45 percentage points). The rate of female imprisonment per 100,000 inhabitants has been equally static: 6.84 in 2014, 6.81 in 2023 (Δ = −0.03). Whatever is happening across European societies over this decade, it is not producing any meaningful change in the scale of female incarceration.</p>
+        </div>
+        <div>
+          <p>Beneath this overall stability, however, significant cross-country variation exists. The countries with the highest rates of female imprisonment per 100,000 inhabitants are <em>Latvia (15.18), Czechia (14.75), Hungary (13.63), Slovakia (13.06), and Malta (10.52)</em> — all Eastern or Southern European countries with Gender Gap Index scores ranging from 0.68 to 0.70. At the other end, <em>Denmark (2.84), Bulgaria (3.31), Cyprus (3.36), the Netherlands (3.39), and France (3.42)</em> imprison the fewest women per 100,000 inhabitants.</p>
+          <p>The female share of prison populations tells a partially different story. Malta (8.13%), Latvia (7.97%), Czechia (7.72%), Finland (7.60%), and Hungary (7.53%) show the highest proportions. <em>Finland is a notable anomaly</em>: the highest female share alongside one of the lowest absolute rates per 100,000 — a reminder that the two metrics measure fundamentally different things.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-block">
+      <h3>Key Findings: Correlations</h3>
+      <div class="col-2">
+        <div>
+          <p>Testing both measures against the Gender Gap Index across all 270 country-year observations yields two sharply divergent results.</p>
+          <span class="stat-pull">Pearson r = −0.330 · Spearman ρ = −0.362 · p &lt; 0.001</span>
+          <p>Female prisoners per 100,000 inhabitants shows a statistically significant negative correlation with the Gender Gap Index. The alignment between the parametric and non-parametric coefficients confirms that the relationship is not an artefact of distributional assumptions or driven by outliers: countries with higher gender equality consistently imprison fewer women relative to their population across the entire decade.</p>
+        </div>
+        <div>
+          <span class="stat-pull">r = −0.045, p = 0.457</span>
+          <p>Female share of total prisoners shows no meaningful association. Both Pearson (r = −0.045, p = 0.457) and Spearman (ρ = −0.097, p = 0.112) correlations are negligible and statistically non-significant. Gender equality has no detectable relationship with how women are represented within prison populations relative to men.</p>
+          <p>This divergence is itself the central finding of the analysis. When societies become more gender-equal, the absolute rate at which women are imprisoned tends to fall — but this reduction moves in parallel with a comparable shift in male incarceration, leaving the internal gender composition of prisons essentially unchanged. The driver appears to be a <em>systemic effect</em> on the criminal justice system as a whole, not a gender-specific one.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-block">
+      <h3>What Theories Tell Us — After the Data</h3>
+      <div class="col-2">
+        <div>
+          <p>These findings speak directly to the long-standing theoretical debate. The <em>emancipation thesis</em> — that greater gender equality would lead to higher female crime rates — finds no support here. The relationship runs in the opposite direction.</p>
+          <p>This aligns with Chesney-Lind's <em>marginalization theory</em>: what drives women into contact with criminal justice systems is structural disadvantage, not empowerment. Where gender equality genuinely improves, fewer women end up imprisoned.</p>
+        </div>
+        <div>
+          <p>The finding also resonates with research on Nordic countries, where Estrada et al. (BJC, 2016) showed that the closing gender gap in crime is driven primarily by a decline in male offending rather than a rise in female criminality. Equality, in this reading, does not lift women toward men's crime rates — it brings the overall system toward historically lower ones.</p>
+          <p>What the data cannot resolve is causality. Countries with high gender equality also differ in welfare state generosity, incarceration philosophy, policing practices, and legal culture. What the data can do — and does — is challenge a persistent assumption: that more equal societies will see women's behaviour, including criminal behaviour, converge with men's. The European evidence, across a full decade and 27 countries, suggests the opposite.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= PAGE 11 — QUIZ + BLACK HAT ========= -->
+<section id="investigate" data-screen-label="11 Investigate">
+  <div class="container reveal-up">
+    <div class="eyebrow" style="color:var(--blue);">Chapter X · A Question for You</div>
+    <h2 class="section-title" style="color:var(--blue);">Look Closely. Then Answer.</h2>
+
+    <div class="quiz-block">
+      <p class="question">Are there significant regional differences in the Gender Gap Index across Europe?</p>
+      <div class="btn-row">
+        <button class="choice yes" id="q-yes">YES</button>
+        <button class="choice no" id="q-no">NO</button>
+      </div>
+      <div class="feedback" id="q-feedback"></div>
+    </div>
+
+    <div class="warning">⚠ Black-hat perspective</div>
+    <h3 class="bh-title">Gender Gap Index by Country and Region — 2014–2023 Average</h3>
+    <p class="subtitle">Do ?</p>
+
+    <div class="grid-2" id="bh-grid"></div>
+
+    <div class="reveal-row">
+      <p id="reveal-text">Do these countries really look the same to you?</p>
+      <button class="reveal" id="reveal-btn">Reveal the truth</button>
+    </div>
+
+    <div class="closer">
+      <p>Equality, in this reading, does not lift women toward men's crime rates. It brings men closer to women's historically lower ones.</p>
+      <span class="mark">— End of investigation · Compiled May 2026 —</span>
+    </div>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script>
+  // === Gender Gap Index per paese per anno ===
+const GenderIndexData = {
+    2014:{AUT:0.742,BEL:0.753,BGR:0.730,HRV:0.728,CYP:0.681,CZE:0.703,DNK:0.802,EST:0.746,FIN:0.845,FRA:0.759,DEU:0.776,GRC:0.679,HUN:0.680,IRL:0.787,ITA:0.697,LVA:0.771,LTU:0.741,LUX:0.726,MLT:0.672,NLD:0.762,POL:0.736,PRT:0.737,ROU:0.700,SVK:0.706,SVN:0.756,ESP:0.762,SWE:0.816},
+    2015:{AUT:0.738,BEL:0.753,BGR:0.728,HRV:0.724,CYP:0.679,CZE:0.706,DNK:0.767,EST:0.749,FIN:0.850,FRA:0.761,DEU:0.779,GRC:0.682,HUN:0.675,IRL:0.807,ITA:0.699,LVA:0.752,LTU:0.741,LUX:0.730,MLT:0.668,NLD:0.776,POL:0.736,PRT:0.737,ROU:0.698,SVK:0.700,SVN:0.784,ESP:0.742,SWE:0.823},
+    2016:{AUT:0.735,BEL:0.750,BGR:0.723,HRV:0.719,CYP:0.673,CZE:0.708,DNK:0.771,EST:0.756,FIN:0.845,FRA:0.755,DEU:0.769,GRC:0.677,HUN:0.672,IRL:0.783,ITA:0.694,LVA:0.769,LTU:0.749,LUX:0.727,MLT:0.671,NLD:0.757,POL:0.733,PRT:0.740,ROU:0.695,SVK:0.702,SVN:0.812,ESP:0.746,SWE:0.815},
+    2017:{AUT:0.740,BEL:0.754,BGR:0.727,HRV:0.727,CYP:0.676,CZE:0.712,DNK:0.778,EST:0.748,FIN:0.823,FRA:0.759,DEU:0.778,GRC:0.681,HUN:0.678,IRL:0.794,ITA:0.700,LVA:0.769,LTU:0.756,LUX:0.728,MLT:0.673,NLD:0.762,POL:0.737,PRT:0.744,ROU:0.699,SVK:0.704,SVN:0.796,ESP:0.752,SWE:0.816},
+    2018:{AUT:0.741,BEL:0.756,BGR:0.729,HRV:0.729,CYP:0.678,CZE:0.714,DNK:0.774,EST:0.750,FIN:0.832,FRA:0.763,DEU:0.780,GRC:0.683,HUN:0.681,IRL:0.798,ITA:0.701,LVA:0.770,LTU:0.758,LUX:0.729,MLT:0.676,NLD:0.764,POL:0.738,PRT:0.746,ROU:0.701,SVK:0.706,SVN:0.791,ESP:0.755,SWE:0.822},
+    2019:{AUT:0.744,BEL:0.757,BGR:0.731,HRV:0.731,CYP:0.681,CZE:0.716,DNK:0.782,EST:0.752,FIN:0.832,FRA:0.766,DEU:0.787,GRC:0.685,HUN:0.683,IRL:0.798,ITA:0.703,LVA:0.771,LTU:0.759,LUX:0.730,MLT:0.679,NLD:0.766,POL:0.740,PRT:0.748,ROU:0.703,SVK:0.708,SVN:0.792,ESP:0.758,SWE:0.820},
+    2020:{AUT:0.745,BEL:0.758,BGR:0.733,HRV:0.733,CYP:0.684,CZE:0.718,DNK:0.783,EST:0.753,FIN:0.861,FRA:0.767,DEU:0.787,GRC:0.689,HUN:0.685,IRL:0.800,ITA:0.707,LVA:0.772,LTU:0.760,LUX:0.731,MLT:0.682,NLD:0.767,POL:0.742,PRT:0.749,ROU:0.705,SVK:0.710,SVN:0.792,ESP:0.760,SWE:0.820},
+    2021:{AUT:0.746,BEL:0.759,BGR:0.734,HRV:0.735,CYP:0.687,CZE:0.719,DNK:0.783,EST:0.754,FIN:0.861,FRA:0.768,DEU:0.796,GRC:0.700,HUN:0.687,IRL:0.800,ITA:0.721,LVA:0.773,LTU:0.761,LUX:0.732,MLT:0.685,NLD:0.768,POL:0.743,PRT:0.751,ROU:0.706,SVK:0.711,SVN:0.791,ESP:0.761,SWE:0.823},
+    2022:{AUT:0.747,BEL:0.760,BGR:0.735,HRV:0.736,CYP:0.689,CZE:0.720,DNK:0.784,EST:0.756,FIN:0.860,FRA:0.769,DEU:0.801,GRC:0.701,HUN:0.688,IRL:0.804,ITA:0.720,LVA:0.774,LTU:0.762,LUX:0.733,MLT:0.687,NLD:0.769,POL:0.744,PRT:0.752,ROU:0.707,SVK:0.712,SVN:0.795,ESP:0.762,SWE:0.822},
+    2023:{AUT:0.748,BEL:0.763,BGR:0.736,HRV:0.737,CYP:0.690,CZE:0.721,DNK:0.787,EST:0.757,FIN:0.863,FRA:0.756,DEU:0.815,GRC:0.702,HUN:0.689,IRL:0.797,ITA:0.703,LVA:0.773,LTU:0.763,LUX:0.734,MLT:0.688,NLD:0.774,POL:0.745,PRT:0.754,ROU:0.708,SVK:0.713,SVN:0.792,ESP:0.760,SWE:0.815}
+  };
+
+  // === Embedded per-year per-country female prisoners per 100k ===
+const mapData = {
+    2014:{AUT:5.93,BEL:4.51,BGR:3.66,CYP:2.5,CZE:11.12,DEU:4.49,DNK:2.57,ESP:10.57,EST:12.24,FIN:4.39,FRA:3.18,GRC:5.25,HRV:4.52,HUN:13.72,IRL:2.58,ITA:3.94,LTU:12.94,LUX:4.67,LVA:17.3,MLT:8.54,NLD:3.98,POL:7.29,PRT:8.03,ROU:7.72,SVK:11.33,SVN:4.32,SWE:3.43},
+    2015:{AUT:5.76,BEL:4.69,BGR:3.52,CYP:2.62,CZE:13.59,DEU:4.42,DNK:2.08,ESP:10.03,EST:11.78,FIN:4.33,FRA:3.23,GRC:4.49,HRV:3.95,HUN:12.76,IRL:2.47,ITA:3.66,LTU:10.17,LUX:7.02,LVA:18.1,MLT:9.23,NLD:2.95,POL:6.79,PRT:8.25,ROU:7.28,SVK:11.63,SVN:3.93,SWE:3.34},
+    2016:{AUT:5.63,BEL:4.07,BGR:3.31,CYP:3.31,CZE:15.55,DEU:4.5,DNK:2.62,ESP:9.45,EST:13.53,FIN:4.11,FRA:3.39,GRC:4.78,HRV:2.99,HUN:13.12,IRL:1.99,ITA:3.96,LTU:11.19,LUX:6.19,LVA:17.81,MLT:8.14,NLD:3.41,POL:6.96,PRT:8.79,ROU:7.16,SVK:12.39,SVN:5.04,SWE:3.49},
+    2017:{AUT:5.89,BEL:3.87,BGR:3.22,CYP:2.71,CZE:15.46,DEU:4.66,DNK:2.36,ESP:9.37,EST:10.7,FIN:4.25,FRA:3.58,GRC:5.12,HRV:3.64,HUN:13.12,IRL:2.99,ITA:4.19,LTU:11.64,LUX:6.2,LVA:14.98,MLT:11.99,NLD:3.48,POL:7.86,PRT:8.45,ROU:5.72,SVK:13.16,SVN:4.68,SWE:3.46},
+    2018:{AUT:6.37,BEL:4.03,BGR:3.2,CYP:2.83,CZE:15.47,DEU:4.55,DNK:2.28,ESP:9.48,EST:9.3,FIN:4.12,FRA:3.77,GRC:5.15,HRV:4.26,HUN:12.43,IRL:3.53,ITA:4.49,LTU:10.78,LUX:5.43,LVA:14.22,MLT:14.88,NLD:3.64,POL:7.98,PRT:8.31,ROU:4.87,SVK:14.17,SVN:3.91,SWE:3.39},
+    2019:{AUT:6.82,BEL:4.17,BGR:3.26,CYP:2.64,CZE:16.3,DEU:4.39,DNK:3.13,ESP:9.28,EST:8.44,FIN:4.06,FRA:3.73,GRC:4.57,HRV:4.91,HUN:12.95,IRL:3.7,ITA:4.67,LTU:10.25,LUX:5.16,LVA:15.36,MLT:12.5,NLD:4.17,POL:8.62,PRT:8.33,ROU:4.81,SVK:14.39,SVN:3.64,SWE:3.97},
+    2020:{AUT:6.21,BEL:4.25,BGR:2.93,CYP:2.3,CZE:14.62,DEU:3.87,DNK:3.24,ESP:8.48,EST:7.3,FIN:4.18,FRA:3.04,GRC:4.93,HRV:4.8,HUN:13.34,IRL:3.06,ITA:3.9,LTU:8.97,LUX:4.6,LVA:13.42,MLT:11.25,NLD:2.95,POL:8.36,PRT:7.85,ROU:5.27,SVK:14.49,SVN:3.28,SWE:4.23},
+    2021:{AUT:5.88,BEL:4.38,BGR:3.23,CYP:5.85,CZE:14.46,DEU:3.64,DNK:3.18,ESP:8.27,EST:7.59,FIN:3.81,FRA:3.27,GRC:5.08,HRV:5.34,HUN:14.85,IRL:2.92,ITA:3.88,LTU:7.73,LUX:5.31,LVA:14.22,MLT:10.42,NLD:3.27,POL:9.32,PRT:7.98,ROU:5.33,SVK:13.79,SVN:2.66,SWE:4.39},
+    2022:{AUT:6.62,BEL:4.31,BGR:3.22,CYP:4.58,CZE:15.11,DEU:3.8,DNK:3.44,ESP:8.31,EST:7.56,FIN:3.74,FRA:3.35,GRC:5.11,HRV:5.68,HUN:14.75,IRL:3.99,ITA:4.11,LTU:7.56,LUX:5.97,LVA:13.2,MLT:9.98,NLD:2.93,POL:9.56,PRT:8.62,ROU:5.46,SVK:11.41,SVN:3.5,SWE:5.05},
+    2023:{AUT:6.72,BEL:4.33,BGR:3.54,CYP:4.31,CZE:15.79,DEU:3.98,DNK:3.55,ESP:8.27,EST:6.42,FIN:4.03,FRA:3.71,GRC:4.78,HRV:5.86,HUN:15.29,IRL:4.39,ITA:4.41,LTU:7.17,LUX:4.2,LVA:13.22,MLT:8.32,NLD:3.12,POL:10.45,PRT:8.71,ROU:5.5,SVK:13.82,SVN:3.73,SWE:6.3}
+  };
+const genderIndexData = {
+    2014:{AUT:0.7266,BEL:0.7809,BGR:0.7444,CYP:0.6741,CZE:0.6737,DEU:0.778,DNK:0.8025,ESP:0.7325,EST:0.7017,FIN:0.8453,FRA:0.7588,GRC:0.6784,HRV:0.7075,HUN:0.6759,IRL:0.785,ITA:0.6973,LTU:0.7208,LUX:0.7333,LVA:0.7691,MLT:0.6707,NLD:0.773,POL:0.7051,PRT:0.7243,ROU:0.6936,SVK:0.6806,SVN:0.7443,SWE:0.8165},
+    2015:{AUT:0.733,BEL:0.753,BGR:0.722,CYP:0.671,CZE:0.687,DEU:0.779,DNK:0.767,ESP:0.742,EST:0.749,FIN:0.85,FRA:0.761,GRC:0.685,HRV:0.708,HUN:0.672,IRL:0.807,ITA:0.726,LTU:0.74,LUX:0.738,LVA:0.752,MLT:0.668,NLD:0.776,POL:0.715,PRT:0.731,ROU:0.693,SVK:0.675,SVN:0.784,SWE:0.823},
+    2016:{AUT:0.716,BEL:0.745,BGR:0.726,CYP:0.684,CZE:0.69,DEU:0.766,DNK:0.754,ESP:0.738,EST:0.747,FIN:0.845,FRA:0.755,GRC:0.68,HRV:0.7,HUN:0.669,IRL:0.797,ITA:0.719,LTU:0.744,LUX:0.734,LVA:0.775,MLT:0.664,NLD:0.756,POL:0.727,PRT:0.737,ROU:0.69,SVK:0.679,SVN:0.786,SWE:0.815},
+    2017:{AUT:0.709,BEL:0.739,BGR:0.756,CYP:0.684,CZE:0.688,DEU:0.778,DNK:0.776,ESP:0.746,EST:0.731,FIN:0.823,FRA:0.778,GRC:0.692,HRV:0.711,HUN:0.67,IRL:0.794,ITA:0.692,LTU:0.742,LUX:0.707,LVA:0.756,MLT:0.682,NLD:0.737,POL:0.728,PRT:0.734,ROU:0.708,SVK:0.694,SVN:0.805,SWE:0.816},
+    2018:{AUT:0.718,BEL:0.738,BGR:0.756,CYP:0.684,CZE:0.693,DEU:0.776,DNK:0.778,ESP:0.746,EST:0.734,FIN:0.821,FRA:0.779,GRC:0.696,HRV:0.712,HUN:0.674,IRL:0.796,ITA:0.706,LTU:0.749,LUX:0.712,LVA:0.758,MLT:0.686,NLD:0.747,POL:0.728,PRT:0.732,ROU:0.711,SVK:0.693,SVN:0.784,SWE:0.822},
+    2019:{AUT:0.731,BEL:0.7445,BGR:0.7415,CYP:0.688,CZE:0.6995,DEU:0.7815,DNK:0.78,ESP:0.7705,EST:0.7425,FIN:0.8265,FRA:0.78,GRC:0.6985,HRV:0.716,HUN:0.6755,IRL:0.797,ITA:0.7065,LTU:0.747,LUX:0.7185,LVA:0.7715,MLT:0.6895,NLD:0.7245,POL:0.732,PRT:0.738,ROU:0.7175,SVK:0.7055,SVN:0.7635,SWE:0.821},
+    2020:{AUT:0.744,BEL:0.751,BGR:0.727,CYP:0.692,CZE:0.706,DEU:0.787,DNK:0.782,ESP:0.795,EST:0.751,FIN:0.832,FRA:0.781,GRC:0.701,HRV:0.72,HUN:0.677,IRL:0.798,ITA:0.707,LTU:0.745,LUX:0.725,LVA:0.785,MLT:0.693,NLD:0.702,POL:0.736,PRT:0.744,ROU:0.724,SVK:0.718,SVN:0.743,SWE:0.82},
+    2021:{AUT:0.777,BEL:0.789,BGR:0.746,CYP:0.707,CZE:0.711,DEU:0.796,DNK:0.768,ESP:0.788,EST:0.733,FIN:0.861,FRA:0.784,GRC:0.689,HRV:0.733,HUN:0.688,IRL:0.8,ITA:0.721,LTU:0.804,LUX:0.726,LVA:0.778,MLT:0.703,NLD:0.762,POL:0.713,PRT:0.775,ROU:0.7,SVK:0.712,SVN:0.741,SWE:0.823},
+    2022:{AUT:0.781,BEL:0.793,BGR:0.74,CYP:0.696,CZE:0.71,DEU:0.801,DNK:0.764,ESP:0.788,EST:0.733,FIN:0.86,FRA:0.791,GRC:0.689,HRV:0.733,HUN:0.699,IRL:0.804,ITA:0.72,LTU:0.799,LUX:0.736,LVA:0.771,MLT:0.703,NLD:0.767,POL:0.709,PRT:0.766,ROU:0.698,SVK:0.717,SVN:0.744,SWE:0.822},
+    2023:{AUT:0.74,BEL:0.796,BGR:0.715,CYP:0.678,CZE:0.685,DEU:0.815,DNK:0.78,ESP:0.791,EST:0.782,FIN:0.863,FRA:0.756,GRC:0.69,HRV:0.73,HUN:0.689,IRL:0.795,ITA:0.705,LTU:0.8,LUX:0.747,LVA:0.794,MLT:0.713,NLD:0.777,POL:0.722,PRT:0.765,ROU:0.697,SVK:0.72,SVN:0.773,SWE:0.815}
+  };
+const countryMeta = {
+    AUT:{name:"Austria",region:"Western"}, BEL:{name:"Belgium",region:"Western"},
+    BGR:{name:"Bulgaria",region:"Eastern"}, HRV:{name:"Croatia",region:"Southern"},
+    CYP:{name:"Cyprus",region:"Southern"}, CZE:{name:"Czechia",region:"Eastern"},
+    DNK:{name:"Denmark",region:"Northern"}, EST:{name:"Estonia",region:"Northern"},
+    FIN:{name:"Finland",region:"Northern"}, FRA:{name:"France",region:"Western"},
+    DEU:{name:"Germany",region:"Western"}, GRC:{name:"Greece",region:"Southern"},
+    HUN:{name:"Hungary",region:"Eastern"}, IRL:{name:"Ireland",region:"Northern"},
+    ITA:{name:"Italy",region:"Southern"}, LVA:{name:"Latvia",region:"Northern"},
+    LTU:{name:"Lithuania",region:"Northern"}, LUX:{name:"Luxembourg",region:"Western"},
+    MLT:{name:"Malta",region:"Southern"}, NLD:{name:"Netherlands",region:"Western"},
+    POL:{name:"Poland",region:"Eastern"}, PRT:{name:"Portugal",region:"Southern"},
+    ROU:{name:"Romania",region:"Eastern"}, SVK:{name:"Slovakia",region:"Eastern"},
+    SVN:{name:"Slovenia",region:"Southern"}, ESP:{name:"Spain",region:"Southern"},
+    SWE:{name:"Sweden",region:"Northern"}
+  };
+  const ISO3_TO_NAME = Object.fromEntries(Object.entries(countryMeta).map(([k,v]) => [k, v.name]));
+  const NAME_TO_ISO3 = Object.fromEntries(Object.entries(countryMeta).map(([k,v]) => [v.name, k]));
+
+  // progress + counter
+  const progressEl = document.getElementById('progress');
+  const counterEl = document.getElementById('counter');
+  const sections = document.querySelectorAll('section');
+  function onScroll() {
+    const h = document.documentElement;
+    const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progressEl.style.width = (scrolled * 100) + '%';
+    let idx = 0;
+    sections.forEach((s, i) => {
+      const r = s.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.5) idx = i;
+    });
+    const total = sections.length;
+    counterEl.textContent = String(idx + 1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal-up').forEach(el => obs.observe(el));
+
+  const D = window.VIZ_DATA;
+
+  // === PAGE 2: Gap animation w/ play, 10s, scrubber ===
+  (function() {
+    const tl = document.getElementById('timeline');
+    const dot = document.getElementById('gap-dot');
+    const manSil = document.getElementById('man-sil');
+    const womanSil = document.getElementById('woman-sil');
+    const yLbl = document.getElementById('gap-year');
+    const gLbl = document.getElementById('gap-ggi');
+    const dLbl = document.getElementById('gap-delta');
+    const playBtn = document.getElementById('gap-play');
+    const scrubWrap = document.getElementById('scrub-wrap');
+    const scrub = document.getElementById('gap-scrub');
+
+    D.YEARS.forEach((y, i) => {
+      const pct = i / (D.YEARS.length - 1) * 100;
+      const t = document.createElement('div');
+      t.className = 'tick'; t.style.left = pct + '%'; tl.appendChild(t);
+      const lab = document.createElement('div');
+      lab.className = 'label'; lab.style.left = pct + '%';
+      lab.textContent = y; tl.appendChild(lab);
+    });
+
+    const DURATION = 7000;
+    let rafId = null;
+    let startTs = null;
+    let elapsed = 0; // ms within 0..DURATION
+    let playing = false;
+
+    function setIcon(icon) { playBtn.innerHTML = icon; }
+    function applyEase(t01) {
+      const ease = t01 < 0.5 ? 2*t01*t01 : 1 - Math.pow(-2*t01 + 2, 2)/2;
+      const manH = 180 + (130 - 180) * ease;
+      const womH = 80 + (130 - 80) * ease;
+      manSil.style.height = manH + 'px';
+      womanSil.style.height = womH + 'px';
+      const yIdx = Math.min(D.YEARS.length - 1, Math.floor(ease * (D.YEARS.length - 1) + 0.0001));
+      const pct = ease * 100;
+      dot.style.left = `calc(6% + ${pct}% * 0.88)`;
+      yLbl.textContent = D.YEARS[yIdx];
+      gLbl.textContent = D.EU_SERIES[yIdx].toFixed(3);
+      dLbl.textContent = Math.round(Math.abs(manH - womH)) + ' px';
+    }
+
+    function tick(ts) {
+      if (!startTs) startTs = ts;
+      elapsed += (ts - startTs);
+      startTs = ts;
+      const t01 = Math.min(1, elapsed / DURATION);
+      applyEase(t01);
+      scrub.value = Math.round(t01 * 1000);
+      if (t01 >= 1) {
+        playing = false;
+        setIcon('▶');
+        scrubWrap.classList.add('show');
+        rafId = null;
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function play() {
+      if (elapsed >= DURATION) { elapsed = 0; }
+      playing = true; startTs = null;
+      setIcon('❚❚');
+      rafId = requestAnimationFrame(tick);
+    }
+    function pause() {
+      playing = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
+      setIcon('▶');
+    }
+
+    playBtn.addEventListener('click', () => { if (playing) pause(); else play(); });
+    scrub.addEventListener('input', () => {
+      if (playing) pause();
+      scrubWrap.classList.add('show');
+      const t01 = +scrub.value / 1000;
+      elapsed = t01 * DURATION;
+      applyEase(t01);
+    });
+
+    // initial state
+    applyEase(0);
+  })();
+
+  // === PAGE 5: Choropleth (D3) ===
+  (function() {
+    const svg = d3.select('#map-svg');
+    const W = 700, H = 560;
+    const tooltip = document.getElementById('map-tooltip');
+    const slider = document.getElementById('map-slider');
+    const yearDisp = document.getElementById('map-year-display');
+
+    // current selection
+    let currentYear = 2014;
+    let selectedISO = 'FIN';
+
+    // color scale (using all values across years)
+    const allVals = Object.values(mapData).flatMap(o => Object.values(o));
+    const colorScale = d3.scaleLinear()
+      .domain([d3.min(allVals), d3.max(allVals)])
+      .range(['#42D4F5', '#003399']);
+
+    const projection = d3.geoMercator().center([14, 54]).scale(620).translate([W/2, H/2]);
+    const path = d3.geoPath(projection);
+
+    // load Europe geojson from CDN (TopoJSON world atlas)
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then(r => r.json())
+      .then(world => Promise.all([
+        Promise.resolve(world),
+        fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json').then(r=>r.json()).catch(()=>null)
+      ]))
+      .then(([world]) => {
+        // need topojson — load it lazily
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/topojson-client@3/dist/topojson-client.min.js';
+        s.onload = () => render(world);
+        document.head.appendChild(s);
+      })
+      .catch(err => {
+        // fallback: show an error message
+        svg.append('text').attr('x', W/2).attr('y', H/2).attr('text-anchor','middle')
+          .attr('fill','rgba(255,255,255,0.6)').attr('font-size',12)
+          .text('Unable to load map. Check your network connection.');
+      });
+
+    // map ISO_N3 -> ISO_A3
+    const N3_TO_A3 = {
+      "040":"AUT","056":"BEL","100":"BGR","191":"HRV","196":"CYP","203":"CZE","208":"DNK",
+      "233":"EST","246":"FIN","250":"FRA","276":"DEU","300":"GRC","348":"HUN","372":"IRL",
+      "380":"ITA","428":"LVA","440":"LTU","442":"LUX","470":"MLT","528":"NLD","616":"POL",
+      "620":"PRT","642":"ROU","703":"SVK","705":"SVN","724":"ESP","752":"SWE"
+    };
+
+    function render(world) {
+      const countries = topojson.feature(world, world.objects.countries).features;
+
+      // background non-EU countries
+      svg.append('g').selectAll('path').data(countries).join('path')
+        .attr('d', path).attr('fill', '#2A2A2A').attr('stroke','#1A1A1A').attr('stroke-width', 0.5);
+
+      // EU countries on top
+      const euLayer = svg.append('g');
+      const euPaths = euLayer.selectAll('path')
+        .data(countries.filter(d => N3_TO_A3[String(d.id).padStart(3,'0')]))
+        .join('path')
+        .attr('d', path)
+        .attr('stroke', '#FFFFFF').attr('stroke-width', 0.5)
+        .style('cursor','pointer')
+        .on('mousemove', (e, d) => {
+          const iso = N3_TO_A3[String(d.id).padStart(3,'0')];
+          if (!iso) return;
+          const rect = document.getElementById('map-wrap').getBoundingClientRect();
+          tooltip.style.left = (e.clientX - rect.left) + 'px';
+          tooltip.style.top = (e.clientY - rect.top) + 'px';
+          tooltip.style.opacity = 1;
+          tooltip.textContent = `${countryMeta[iso].name} · ${mapData[currentYear][iso].toFixed(2)}`;
+        })
+        .on('mouseleave', () => { tooltip.style.opacity = 0; })
+        .on('click', (e, d) => {
+          const iso = N3_TO_A3[String(d.id).padStart(3,'0')];
+          if (iso) selectCountry(iso);
+        });
+
+      function paint() {
+        euPaths.transition().duration(400)
+          .attr('fill', d => {
+            const iso = N3_TO_A3[String(d.id).padStart(3,'0')];
+            return iso ? colorScale(mapData[currentYear][iso]) : '#2A2A2A';
+          });
+      }
+      paint();
+    slider.addEventListener('input', () => {
+      currentYear = +slider.value;
+      yearDisp.textContent = currentYear;
+      paint();
+      selectCountry(selectedISO);
+    });  
+    }
+
+    const ccName = document.getElementById('cc-name');
+    const ccRegion = document.getElementById('cc-region');
+    const ccGGI = document.getElementById('cc-ggi');
+    const ccRate = document.getElementById('cc-rate');
+    const ccPct = document.getElementById('cc-pct');
+    function selectCountry(iso) {
+      selectedISO = iso;
+      const m = countryMeta[iso];
+      const cName = m.name;
+      ccName.textContent = cName;
+      ccRegion.textContent = m.region;
+      const rate = mapData[currentYear] && mapData[currentYear][iso] != null
+        ? mapData[currentYear][iso] : null;
+      const ggi = GenderIndexData[currentYear] && GenderIndexData[currentYear][iso] != null
+        ? GenderIndexData[currentYear][iso] : null;
+      ccGGI.textContent = ggi != null ? ggi.toFixed(3) : '—';
+      ccRate.textContent = rate != null ? rate.toFixed(1) : '—';
+      ccPct.textContent = ((D.FEM_PCT[cName] || 0)).toFixed(1) + '%';
+    }
+  })();
+
+  // === PAGE 6: Race bar chart — 27 countries + EU avg, blue + gold for EU ===
+  (function() {
+    const wrap = document.getElementById('race-chart');
+    const allCountries = Object.keys(D.GGI);
+    const ROWS = allCountries.length + 1; // +1 EU
+    const ROW_H = 22;
+    const W = wrap.clientWidth || 900;
+    const H = ROWS * ROW_H + 60;
+    const svg = d3.select(wrap).append('svg').attr('viewBox', `0 0 ${W} ${H}`);
+    const margin = {top: 18, right: 80, bottom: 26, left: 130};
+    const innerW = W - margin.left - margin.right;
+    const innerH = H - margin.top - margin.bottom;
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    let yearIdx = 0;
+
+    function dataForYear(yi) {
+      const arr = allCountries.map(c => ({country: c, value: D.GGI[c][yi], isEU: false}));
+      arr.push({country: 'European Average', value: D.EU_SERIES[yi], isEU: true});
+      arr.sort((a,b) => b.value - a.value);
+      return arr;
+    }
+
+    const x = d3.scaleLinear().domain([0.6, 0.88]).range([0, innerW]);
+    const y = d3.scaleBand().range([0, innerH]).padding(0.18);
+
+    const xAxis = g.append('g').attr('class','axis').attr('transform', `translate(0,${innerH})`);
+    const yAxis = g.append('g').attr('class','axis');
+
+    function update(yi, animate=true) {
+      const data = dataForYear(yi);
+      x.domain([0.60, 0.88]);
+      y.domain(data.map(d => d.country));
+      const dur = animate ? 600 : 0;
+
+      const bars = g.selectAll('rect.bar').data(data, d => d.country);
+      bars.enter().append('rect').attr('class', 'bar')
+        .attr('x', 0).attr('y', d => y(d.country))
+        .attr('height', y.bandwidth()).attr('width', 0)
+        .attr('fill', d => d.isEU ? '#FFD700' : '#003399')
+        .merge(bars).transition().duration(dur)
+        .attr('y', d => y(d.country))
+        .attr('height', y.bandwidth())
+        .attr('width', d => x(d.value))
+        .attr('fill', d => d.isEU ? '#FFD700' : '#003399');
+      bars.exit().remove();
+
+      const lbls = g.selectAll('text.val').data(data, d => d.country);
+      lbls.enter().append('text').attr('class','val')
+        .attr('y', d => y(d.country))
+        .attr('dy', '0.95em').attr('dx', 6)
+        .attr('font-family','JetBrains Mono, monospace')
+        .attr('font-size', 9).attr('fill','#003399')
+        .merge(lbls).transition().duration(dur)
+        .attr('x', d => x(d.value)).attr('y', d => y(d.country))
+        .text(d => d.value.toFixed(3));
+      lbls.exit().remove();
+
+      xAxis.transition().duration(dur).call(d3.axisBottom(x).ticks(5));
+      yAxis.transition().duration(dur).call(d3.axisLeft(y));
+      yAxis.selectAll('text').attr('fill', '#003399').attr('font-size', 9);
+
+      document.getElementById('race-year').textContent = D.YEARS[yi];
+      document.getElementById('race-leader').textContent = data[0].country;
+    }
+    update(0, false);
+
+    let timer = null;
+    const playBtn = document.getElementById('race-play');
+    playBtn.addEventListener('click', () => {
+      if (timer) { clearInterval(timer); timer = null; playBtn.textContent = '▶ PLAY'; }
+      else {
+        playBtn.textContent = '❚❚ PAUSE';
+        timer = setInterval(() => {
+          yearIdx = (yearIdx + 1) % D.YEARS.length;
+          update(yearIdx);
+        }, 900);
+      }
+    });
+  })();
+
+  // === PAGE 7: Regional Area Plots (white panels) ===
+  (function() {
+    const grid = document.getElementById('area-grid');
+    const regions = ['Northern','Southern','Western','Eastern'];
+    regions.forEach(reg => {
+      const card = document.createElement('div');
+      card.className = 'area-card';
+      card.innerHTML = `
+        <div class="title">${reg} Europe</div>
+        <div class="sub">Regional mean vs. EU mean</div>
+        <svg></svg>
+        <div class="legend">
+          <span><span class="dot" style="background:${D.REGION_COLORS[reg]};"></span>${reg} Mean</span>
+          <span><span class="dot" style="background:#E74C3C; height:0; border-top:2px dashed #E74C3C;"></span>EU Mean</span>
+        </div>`;
+      grid.appendChild(card);
+
+      const svg = d3.select(card).select('svg');
+      const W = card.clientWidth - 44, H = 220;
+      svg.attr('viewBox', `0 0 ${W} ${H}`);
+      const m = {top:10, right:14, bottom:24, left:38};
+      const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
+      const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+
+      const x = d3.scaleLinear().domain([2014,2023]).range([0,iw]);
+      const y = d3.scaleLinear().domain([0.675, 0.825]).range([ih, 0]);
+      const series = D.REGIONAL_SERIES[reg].map((v,i) => ({year: D.YEARS[i], v}));
+      const eu = D.EU_SERIES.map((v,i) => ({year: D.YEARS[i], v}));
+      const area = d3.area().x(d => x(d.year)).y0(ih).y1(d => y(d.v)).curve(d3.curveMonotoneX);
+      const line = d3.line().x(d => x(d.year)).y(d => y(d.v)).curve(d3.curveMonotoneX);
+
+      g.append('path').datum(series).attr('fill', D.REGION_COLORS[reg]).attr('opacity', 0.32).attr('d', area);
+      g.append('path').datum(series).attr('fill','none').attr('stroke', D.REGION_COLORS[reg]).attr('stroke-width', 2.5).attr('d', line);
+      g.append('path').datum(eu).attr('fill','none').attr('stroke','#E74C3C').attr('stroke-dasharray','4 4').attr('stroke-width',1.6).attr('d', line);
+
+      g.append('g').attr('class','axis').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x).tickFormat(d3.format('d')).ticks(5));
+      g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(4).tickFormat(d3.format('.3f')));
+    });
+  })();
+
+  // === PAGE 8: Interactive Scatter (animated by year) ===
+  (function() {
+    const wrap = document.getElementById('scatter-chart');
+    const W = 800, H = 600;
+    const svg = d3.select(wrap).append('svg').attr('viewBox', `0 0 ${W} ${H}`);
+    const m = {top:30, right:30, bottom:50, left:60};
+    const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
+    const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+
+    const isos = Object.keys(countryMeta);
+    const x = d3.scaleLinear().domain([0.66, 0.88]).range([0, iw]);
+    const y = d3.scaleLinear().domain([0, 18]).range([ih, 0]);
+
+    g.append('g').attr('class','axis').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x).tickFormat(d3.format('.2f')));
+    g.append('g').attr('class','axis').call(d3.axisLeft(y));
+
+    g.append('text').attr('x', iw/2).attr('y', ih + 38).attr('text-anchor','middle')
+      .attr('font-family','JetBrains Mono, monospace').attr('font-size', 11).attr('fill','#003399')
+      .text('Gender Gap Index');
+    g.append('text').attr('transform','rotate(-90)').attr('x', -ih/2).attr('y', -42).attr('text-anchor','middle')
+      .attr('font-family','JetBrains Mono, monospace').attr('font-size', 11).attr('fill','#003399')
+      .text('Female prisoners per 100k');
+
+    // year watermark
+    const yearMark = g.append('text')
+      .attr('x', iw - 10).attr('y', 50)
+      .attr('text-anchor','end')
+      .attr('font-family','Playfair Display, serif')
+      .attr('font-size', 80).attr('fill','rgba(0,51,153,0.08)').text('2014');
+
+    const trendLine = g.append('line').attr('stroke', '#FFD700').attr('stroke-width', 2).attr('stroke-dasharray','4 4');
+
+    function dataForYear(yr) {
+      return isos.map(iso => ({
+        iso, name: countryMeta[iso].name, region: countryMeta[iso].region,
+        ggi: D.GGI[countryMeta[iso].name] ? D.GGI[countryMeta[iso].name][D.YEARS.indexOf(yr)] : null,
+        rate: mapData[yr][iso]
+      })).filter(d => d.ggi != null);
+    }
+
+    function update(yr) {
+      const data = dataForYear(yr);
+      yearMark.text(yr);
+
+      const dots = g.selectAll('circle.dot').data(data, d => d.iso);
+      dots.enter().append('circle').attr('class','dot')
+        .attr('r', 7).attr('stroke','#fff').attr('stroke-width', 1.5).attr('opacity', 0.85)
+        .attr('cx', d => x(d.ggi)).attr('cy', d => y(d.rate))
+        .attr('fill', d => D.REGION_COLORS[d.region])
+        .merge(dots).transition().duration(700)
+        .attr('cx', d => x(d.ggi)).attr('cy', d => y(d.rate))
+        .attr('fill', d => D.REGION_COLORS[d.region]);
+      dots.exit().remove();
+
+      const labs = g.selectAll('text.lab').data(data, d => d.iso);
+      labs.enter().append('text').attr('class','lab')
+        .attr('font-family','JetBrains Mono, monospace').attr('font-size', 9).attr('fill','#1A1A1A')
+        .merge(labs).transition().duration(700)
+        .attr('x', d => x(d.ggi) + 9).attr('y', d => y(d.rate) + 3)
+        .text(d => d.iso);
+      labs.exit().remove();
+
+      // trend
+      const xs = data.map(d=>d.ggi), ys = data.map(d=>d.rate);
+      const mx = d3.mean(xs), my = d3.mean(ys);
+      const num = d3.sum(data, d => (d.ggi-mx)*(d.rate-my));
+      const den = d3.sum(data, d => (d.ggi-mx)*(d.ggi-mx));
+      const slope = num/den, intercept = my - slope*mx;
+      trendLine.transition().duration(700)
+        .attr('x1', x(0.66)).attr('y1', y(slope*0.66 + intercept))
+        .attr('x2', x(0.88)).attr('y2', y(slope*0.88 + intercept));
+    }
+
+    const slider = document.getElementById('scatter-slider');
+    const yearDisp = document.getElementById('scatter-year-display');
+    slider.addEventListener('input', () => {
+      yearDisp.textContent = slider.value;
+      update(+slider.value);
+    });
+    update(2014);
+
+    let timer = null;
+    document.getElementById('scatter-play').addEventListener('click', function() {
+      const btn = this;
+      if (timer) { clearInterval(timer); timer = null; btn.textContent = '▶ PLAY'; return; }
+      btn.textContent = '❚❚ PAUSE';
+      let cur = +slider.value;
+      timer = setInterval(() => {
+        cur = cur >= 2023 ? 2014 : cur + 1;
+        slider.value = cur;
+        yearDisp.textContent = cur;
+        update(cur);
+      }, 900);
+    });
+  })();
+
+  // === PAGE 9: Heatmap (white y-labels) ===
+  (function() {
+    const wrap = document.getElementById('heatmap-chart');
+    const countries = Object.keys(D.COUNTRY_AVG_GGI).sort((a,b) => D.COUNTRY_AVG_GGI[b] - D.COUNTRY_AVG_GGI[a]);
+    const W = 1200, H = countries.length * 22 + 50;
+    const m = {top: 28, right: 80, bottom: 24, left: 110};
+    const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
+    const svg = d3.select(wrap).append('svg').attr('viewBox', `0 0 ${W} ${H}`);
+    const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+
+    const x = d3.scaleBand().domain(D.YEARS).range([0, iw]).padding(0.04);
+    const y = d3.scaleBand().domain(countries).range([0, ih]).padding(0.06);
+
+    const allVals = countries.flatMap(c => D.GGI[c]);
+    const mid = D.EU_AVG;
+    const color = d3.scaleLinear().domain([d3.min(allVals), mid, d3.max(allVals)]).range(['#003399','#f5f5f5','#C0392B']);
+
+    countries.forEach(c => {
+      D.YEARS.forEach((yr, i) => {
+        const v = D.GGI[c][i];
+        g.append('rect').attr('x', x(yr)).attr('y', y(c))
+          .attr('width', x.bandwidth()).attr('height', y.bandwidth())
+          .attr('fill', color(v))
+          .append('title').text(`${c} · ${yr} · ${v.toFixed(3)}`);
+      });
+    });
+
+    g.append('g').attr('class','axis').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x).tickFormat(d3.format('d')));
+    const yAx = g.append('g').attr('class','axis').call(d3.axisLeft(y));
+    yAx.selectAll('text').attr('fill','#FFFFFF').attr('font-size', 11);
+    g.selectAll('.axis line, .axis path').attr('stroke','rgba(255,255,255,0.2)');
+    svg.selectAll('.axis text').filter(function() { return d3.select(this.parentNode).attr('transform') && d3.select(this.parentNode).attr('transform').includes(`translate(0,${ih})`); }).attr('fill','rgba(255,255,255,0.85)');
+
+    // legend
+    const defs = svg.append('defs');
+    const lg = defs.append('linearGradient').attr('id','heatGrad').attr('x1','0').attr('x2','0').attr('y1','0').attr('y2','1');
+    lg.append('stop').attr('offset','0%').attr('stop-color','#C0392B');
+    lg.append('stop').attr('offset','50%').attr('stop-color','#f5f5f5');
+    lg.append('stop').attr('offset','100%').attr('stop-color','#003399');
+    g.append('rect').attr('x', iw + 18).attr('y', 0).attr('width', 14).attr('height', ih).attr('fill','url(#heatGrad)');
+    g.append('text').attr('x', iw + 38).attr('y', 8).attr('fill','rgba(255,255,255,0.85)').attr('font-size', 10).text(d3.max(allVals).toFixed(2));
+    g.append('text').attr('x', iw + 38).attr('y', ih).attr('fill','rgba(255,255,255,0.85)').attr('font-size', 10).text(d3.min(allVals).toFixed(2));
+  })();
+
+  // === PAGE 11: Black hat bars + reveal toggle ===
+  function renderRegionBars(containerId, yMin, yMax, showLabels = true) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const regions = ['Northern','Southern','Western','Eastern'];
+    regions.forEach(reg => {
+      const card = document.createElement('div');
+      card.className = 'bar-card';
+      card.innerHTML = `<div class="title" style="color:${D.REGION_COLORS[reg]}">${reg} Europe — Media 2014-2023</div><svg></svg>`;
+      container.appendChild(card);
+      const svg = d3.select(card).select('svg');
+      const W = card.clientWidth - 36, H = 200;
+      svg.attr('viewBox', `0 0 ${W} ${H}`);
+      const m = {top:6, right:12, bottom:60, left:34};
+      const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
+      const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+      const ctrs = D.REGIONS[reg].slice().sort((a,b) => D.COUNTRY_AVG_GGI[b] - D.COUNTRY_AVG_GGI[a]);
+      const x = d3.scaleBand().domain(ctrs).range([0, iw]).padding(0.18);
+      const y = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+      g.append('g').attr('class','axis').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x))
+        .selectAll('text').attr('transform','rotate(-35)').attr('text-anchor','end').attr('dx','-4').attr('dy','4').attr('font-size', 9);
+      g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.2f')));
+      g.selectAll('rect').data(ctrs).join('rect')
+        .attr('x', d => x(d)).attr('y', d => y(D.COUNTRY_AVG_GGI[d]))
+        .attr('width', x.bandwidth()).attr('height', d => ih - y(D.COUNTRY_AVG_GGI[d]))
+        .attr('fill', D.REGION_COLORS[reg]).attr('opacity', 0.85);
+      if (showLabels) {
+        g.selectAll('text.v').data(ctrs).join('text').attr('class','v')
+          .attr('x', d => x(d) + x.bandwidth()/2).attr('y', d => y(D.COUNTRY_AVG_GGI[d]) - 4)
+          .attr('text-anchor','middle').attr('font-family','JetBrains Mono, monospace')
+          .attr('font-size', 9).attr('fill','#1A1A1A')
+          .text(d => D.COUNTRY_AVG_GGI[d].toFixed(3));
+      }
+      g.append('line').attr('x1',0).attr('x2',iw)
+        .attr('y1', y(D.EU_AVG)).attr('y2', y(D.EU_AVG))
+        .attr('stroke','#FFD700').attr('stroke-dasharray','4 4').attr('stroke-width',1.4);
+    });
+  }
+  renderRegionBars('bh-grid', 0.0, 1.0, false);
+
+  let bhTruthShown = false;
+  const revealText = document.getElementById('reveal-text');
+  document.getElementById('reveal-btn').addEventListener('click', () => {
+    bhTruthShown = !bhTruthShown;
+    if (bhTruthShown) {
+      renderRegionBars('bh-grid', 0.60, 0.85, true);
+      document.getElementById('reveal-btn').textContent = 'Hide the truth';
+      revealText.innerHTML = 'Look closely. The bars look almost identical. The differences seem trivial. But the y-axis runs from <span class="mono">0.0</span> to <span class="mono">1.0</span> — that single choice flattens a decade of real divergence.';
+    } else {
+      renderRegionBars('bh-grid', 0.0, 1.0, false);
+      document.getElementById('reveal-btn').textContent = 'Reveal the truth';
+      revealText.textContent = 'Do these countries really look the same to you?';
+    }
+  });
+
+  // === Quiz interactions ===
+  (function() {
+    const fb = document.getElementById('q-feedback');
+    document.getElementById('q-yes').addEventListener('click', () => {
+      fb.classList.add('show');
+      fb.innerHTML = `<span class="check">✓ Correct!</span> The data confirms strong regional differences. Northern Europe consistently outperforms Eastern Europe by over <b>0.10 points</b> on the Gender Gap Index.`;
+    });
+    document.getElementById('q-no').addEventListener('click', () => {
+      fb.classList.add('show');
+      fb.innerHTML = `Not quite — look closely at the chart below, then press <b>Reveal the truth</b>. ↓`;
+    });
+  })();
+</script>
+</body>
+</html>
