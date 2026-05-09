@@ -20,6 +20,7 @@
     --green: #27AE60;
     --purple: #8E44AD;
     --salmon: #E74C3C;
+    --celeste: #42D4F5;
   }
   * { box-sizing: border-box; }
   html, body {
@@ -377,7 +378,7 @@
     font-size: 11px; letter-spacing: 0.1em;
     color: rgba(255,255,255,0.7);
   }
-  #map-legend .grad { width: 240px; height: 8px; background: linear-gradient(90deg, #FFD700, #003399); border: 1px solid rgba(255,255,255,0.15); }
+  #map-legend .grad { width: 240px; height: 8px; background: linear-gradient(90deg, #42D4F5, #003399); border: 1px solid rgba(255,255,255,0.15); }
   @media (max-width: 900px) { #map-section .layout { grid-template-columns: 1fr; } }
 
   /* ========= PAGE 6 — Race ========= */
@@ -602,13 +603,13 @@
   <span class="corner tl"></span><span class="corner tr"></span>
   <span class="corner bl"></span><span class="corner br"></span>
   <div class="meta-row">
-    <span>Eurostat × WEF · 2014–2023</span>
-    <span>27 EU Member States · 270 obs.</span>
+    <span>Eurostat × World Economic Forum · 2014–2023</span>
+    <span>27 EU Member States</span>
   </div>
   <div class="hero-content">
     <div class="kicker">A Data Investigation</div>
     <h1>How do changes in <em>gender inequality</em> relate to cross-country differences in <em>female incarceration</em> in Europe?</h1>
-    <p class="deck">Ten years of prison statistics. Twenty-seven member states. One question that has divided criminology since 1895 — does the closing gender gap also close the gap behind bars?</p>
+    <p class="deck">Ten years of prison statistics. Twenty-seven member states. One question that has divided criminology since 1895: does the closing gender gap also close the gap behind bars?</p>
   </div>
   <div class="scroll-arrow">
     <span>Scroll to begin</span>
@@ -621,7 +622,7 @@
   <div class="container reveal-up" style="text-align:center;">
     <div class="eyebrow" style="color:var(--blue);">Chapter I · The Premise</div>
     <h2 class="section-title" style="color:var(--blue);">The Shrinking Gap: A Decade of Change</h2>
-    <p class="lead" style="margin: 0 auto;">Europe's gender gap index has not closed — but it has narrowed. Press play to compress a decade into ten seconds.</p>
+    <p class="lead" style="margin: 0 auto;">Europe's gender gap index has not closed, but it has narrowed. Press play to compress a decade into few seconds.</p>
     <button class="play-btn-circle" id="gap-play" aria-label="Play">▶</button>
 
     <div class="stage" id="gap-stage">
@@ -742,7 +743,7 @@
         <div>
           <span class="tag">Source 02 · WEF Gender Gap Report</span>
           <h3>Gender Equality Data</h3>
-          <p>The Gender Gap Index — a 0-to-1 composite across four dimensions. Merged by country-year into 270 paired observations.</p>
+          <p>The Gender Gap Index: a 0-to-1 composite across four dimensions. Merged by country-year into 270 paired observations.</p>
         </div>
       </div>
       <div class="block">
@@ -754,13 +755,14 @@
           </svg>
         </div>
         <div>
-          <span class="tag">Method · Python · pandas · NumPy · SciPy</span>
-          <h3>Analysis</h3>
-          <p>Pearson's <em>r</em> and Spearman's <em>ρ</em> on the country-year panel; subgroup correlations by region. Exploratory in spirit — no causal claims attached.</p>
+          <span class="tag">Method · Python · Tableau · Power BI </span>
+          <h3>Analysis & Tools</h3>
+          <p>Pearson's <em>r</em> and Spearman's <em>ρ</em> on the country-year panel; subgroup correlations by region.</p>
         </div>
       </div>
     </div>
-    <div class="note">Limitation: cross-sectional and longitudinal variation are pooled. Future work should fit a fixed-effects panel regression to separate within- and between-country effects.</div>
+    <div class="note">Limitation: data comparability across European countries may be affected by differences in how national institutions collect, classify, and report prison statistics. 
+      The lack of full methodological uniformity means that cross-country comparisons should be interpreted with caution.</div>
   </div>
 </section>
 
@@ -769,7 +771,7 @@
   <div class="container reveal-up">
     <div class="eyebrow" style="color:var(--gold);">Chapter IV · The Map</div>
     <h2 class="section-title">Explore the Data: Female Incarceration Across Europe</h2>
-    <p class="lead" style="opacity:0.75;">A globe, then a continent. Click any country to see ten years of evidence.</p>
+    <p class="lead" style="opacity:0.75;">Click any country to see ten years of evidence.</p>
 
     <div class="layout">
       <div>
@@ -1042,7 +1044,7 @@
       lab.textContent = y; tl.appendChild(lab);
     });
 
-    const DURATION = 10000;
+    const DURATION = 7000;
     let rafId = null;
     let startTs = null;
     let elapsed = 0; // ms within 0..DURATION
@@ -1122,7 +1124,7 @@
     const allVals = Object.values(mapData).flatMap(o => Object.values(o));
     const colorScale = d3.scaleLinear()
       .domain([d3.min(allVals), d3.max(allVals)])
-      .range(['#FFD700', '#003399']);
+      .range(['#42D4F5', '#003399']);
 
     const projection = d3.geoMercator().center([14, 54]).scale(620).translate([W/2, H/2]);
     const path = d3.geoPath(projection);
