@@ -1208,14 +1208,12 @@ const countryMeta = {
           });
       }
       paint();
-
-      slider.addEventListener('input', () => {
-        currentYear = +slider.value;
-        yearDisp.textContent = currentYear;
-        paint();
-      });
-
+    slider.addEventListener('input', () => {
+      currentYear = +slider.value;
+      yearDisp.textContent = currentYear;
+      paint();
       selectCountry(selectedISO);
+    });  
     }
 
     const ccName = document.getElementById('cc-name');
@@ -1229,8 +1227,10 @@ const countryMeta = {
       const cName = m.name;
       ccName.textContent = cName;
       ccRegion.textContent = m.region;
+      const rate = mapData[currentYear] && mapData[currentYear][iso] != null
+        ? mapData[currentYear][iso] : null;
       ccGGI.textContent = (D.COUNTRY_AVG_GGI[cName] || 0).toFixed(3);
-      ccRate.textContent = (D.FEM_PER_100K[cName] || 0).toFixed(1);
+      ccRate.textContent = rate != null ? rate.toFixed(1) : '—';
       ccPct.textContent = ((D.FEM_PCT[cName] || 0)).toFixed(1) + '%';
     }
   })();
