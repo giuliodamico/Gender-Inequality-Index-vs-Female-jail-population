@@ -341,6 +341,9 @@
     font-size: 11px; color: rgba(255,255,255,0.7);
     letter-spacing: 0.1em;
   }
+  .map-slider-wrap { position: relative; width: 100%; }
+  #map-ticks { display: flex; justify-content: space-between; padding: 0 9px; margin-top: 3px; }
+  #map-ticks .mtick { width: 1px; height: 6px; background: rgba(255,215,0,0.5); }
   .country-card {
     background: var(--warm); color: var(--ink);
     padding: 28px 30px;
@@ -787,7 +790,10 @@
         </div>
         <div id="map-controls">
           <div id="map-year-display">2014</div>
-          <input type="range" id="map-slider" min="2014" max="2023" step="1" value="2014"/>
+          <div class="map-slider-wrap">
+            <input type="range" id="map-slider" min="2014" max="2023" step="1" value="2014"/>
+            <div id="map-ticks"></div>
+          </div>
           <div id="map-year-range">2014 ── 2023</div>
         </div>
         <div id="map-legend">
@@ -839,7 +845,7 @@
 <section id="area-plots" data-screen-label="07 Area Plots">
   <div class="container reveal-up">
     <div class="eyebrow" style="color:var(--gold);">Chapter VI · Trends</div>
-    <h2 class="section-title">Gender Gap Index Over Time — Regional Trends</h2>
+    <h2 class="section-title">Gender Gap Index Over Time for Regional Trends</h2>
     <p class="lead" style="color:rgba(231,216,195,0.8); white-space:nowrap;">Four regions, ten years. Each panel plots the regional mean against the EU average (dashed red).</p>
     <div class="grid-2" id="area-grid"></div>
   </div>
@@ -1158,6 +1164,10 @@ const countryMeta = {
     const tooltip = document.getElementById('map-tooltip');
     const slider = document.getElementById('map-slider');
     const yearDisp = document.getElementById('map-year-display');
+    const ticksEl = document.getElementById('map-ticks');
+    for (let y = 2014; y <= 2023; y++) {
+      const t = document.createElement('div'); t.className = 'mtick'; ticksEl.appendChild(t);
+    }
 
     // current selection
     let currentYear = 2014;
@@ -1571,16 +1581,19 @@ const countryMeta = {
 
   let bhTruthShown = false;
   const revealText = document.getElementById('reveal-text');
+  const warningEl = document.querySelector('#investigate .warning');
   document.getElementById('reveal-btn').addEventListener('click', () => {
     bhTruthShown = !bhTruthShown;
     if (bhTruthShown) {
       renderRegionBars('bh-grid', 0.60, 0.85, true);
       document.getElementById('reveal-btn').textContent = 'Hide the truth';
       revealText.innerHTML = 'Look closely. The bars look almost identical. The differences seem trivial. But the y-axis runs from <span class="mono">0.0</span> to <span class="mono">1.0</span> — that single choice flattens a decade of real divergence.';
+      warningEl.textContent = '✓ White-hat perspective';
     } else {
       renderRegionBars('bh-grid', 0.0, 1.0, false);
       document.getElementById('reveal-btn').textContent = 'Reveal the truth';
       revealText.textContent = 'Do these countries really look the same to you?';
+      warningEl.textContent = '⚠ Black-hat perspective';
     }
   });
 
