@@ -220,7 +220,7 @@
     background: var(--gold); border: 2px solid var(--blue);
     cursor: pointer;
   }
-  #gap .caption { text-align: center; margin-top: 26px; max-width: 60ch; line-height: 1.6; font-size: 1.05rem; margin-left: auto; margin-right: auto; }
+  #gap .caption { text-align: center; margin-top: 26px; max-width: 60ch; line-height: 1.6; font-size: 1.05rem; }
   #gap .stat-line {
     margin-top: 12px; display: flex; gap: 32px; justify-content: center;
     font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--blue);
@@ -1408,9 +1408,9 @@ const countryMeta = {
     function dataForYear(yr) {
       return isos.map(iso => ({
         iso, name: countryMeta[iso].name, region: countryMeta[iso].region,
-        ggi: D.GGI[countryMeta[iso].name] ? D.GGI[countryMeta[iso].name][D.YEARS.indexOf(yr)] : null,
-        rate: mapData[yr][iso]
-      })).filter(d => d.ggi != null);
+        ggi: GenderIndexData[yr] ? GenderIndexData[yr][iso] : null,
+        rate: mapData[yr] ? mapData[yr][iso] : null
+      })).filter(d => d.ggi != null && d.rate != null);
     }
 
     function update(yr) {
